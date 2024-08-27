@@ -12,24 +12,17 @@ html {
 body {
   width: 100vw;
   margin: 0;
-  margin-bottom: 15rem;
   padding: 0;
-
   font-family: Poppins, sans-serif;
-
   background-color: $gris1;
-
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 aside {
   flex: 0 0 300px;
-
   height: 100vh;
-  margin-top: 4rem;
-  padding-top: 4rem;
+  padding-top: 60px;
   width: 300px;
-
   background-color: var(--blanco);
 }

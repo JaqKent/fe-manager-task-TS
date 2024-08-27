@@ -4,6 +4,8 @@
 
 .formLogin {
   @include flex(center, center);
+
+  margin: -20px;
   height: 100vh;
   background-color: $gris2;
 }
@@ -27,9 +29,6 @@
   width: 95%;
   background-color: $blanco;
   border-radius: 1rem;
-
-  -webkit-box-shadow: 0 0.6rem 1.1rem -0.8rem #000000e6;
-  -moz-box-shadow: 0 0.6rem 1.1rem -0.8rem #000000e6;
   box-shadow: 0 0.6rem 1.1rem -0.8rem #000000e6;
 }
 
