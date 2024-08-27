@@ -1,0 +1,20 @@
+@import '../../../scss/colors';
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+.button {
+  background-color: $gris3;
+  border-radius: 0.5rem;
+  color: $blanco;
+  display: block;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.mensajeAlert {
+  background-color: $green;
+  border-radius: 0.5rem;
+  color: $blanco;
+  margin-top: 1rem;
+  padding: 0.5rem;
+}

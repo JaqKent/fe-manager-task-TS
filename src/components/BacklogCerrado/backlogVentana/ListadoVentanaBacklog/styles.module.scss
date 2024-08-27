@@ -1,0 +1,76 @@
+@import '../../../../scss/colors';
+@import '../../../../scss/mixins';
+@import '../../../../scss/variables';
+
+.textoProyecto {
+  margin-top: 2rem;
+}
+
+.textBranch {
+  @include flex(center, center, row);
+
+  margin-left: 6rem;
+}
+
+.mensajeConfirmacion {
+  color: $blanco;
+  background-color: $green;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.searchInput {
+  font-size: 15px !important;
+  border: 1px solid $gris1;
+  border-radius: 1rem;
+  box-shadow: $itemShadow;
+  width: 30%;
+  word-break: break-all;
+  padding: 1rem 0.5rem;
+}
+
+.tituloTable {
+  font-size: 1.2rem !important;
+}
+
+.container {
+  width: 100%;
+}
+
+.spinner {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+}
+
+.appHeaderBranch {
+  @include flex(flex-end, center, row);
+
+  margin-top: -50px;
+
+  .buttonCrearVentana {
+    @include flex(center, center, row);
+
+    background-color: $gris2;
+    border-radius: 0.4rem;
+    border: none;
+    box-shadow: $box-shadow;
+    color: $gris1;
+    height: 30px;
+    padding: 1rem;
+    transition: background-color 0.3s ease;
+    width: 15rem;
+    font-size: 16px;
+
+    &:hover {
+      background-color: lighten($selected, 10%);
+    }
+  }
+}
+
+.header {
+  @include flex(flex-start, center, row);
+
+  margin-bottom: 10px;
+}

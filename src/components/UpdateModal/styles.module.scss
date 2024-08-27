@@ -1,0 +1,143 @@
+@import '../../scss/colors';
+@import '../../scss/mixins';
+@import '../../scss/variables';
+
+.modalContainer {
+  @include flex(flex-start, flex-start, column);
+
+  background-color: $background;
+  border-radius: 0.5rem;
+  box-shadow: $box-shadow;
+  height: 45rem;
+  overflow-y: auto;
+  position: fixed;
+  width: 50vw !important;
+  z-index: 9;
+}
+
+.modalTitle {
+  @include flex(space-between, center, row);
+
+  background-color: $gris3;
+  border-radius: 0.5rem 0.5rem 0 0;
+  color: $blanco;
+  padding: 0.5rem;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.modalDescription {
+  width: 60%;
+}
+
+.fechaCerrar {
+  @include flex(flex-end, center, row);
+
+  width: 14%;
+
+  .title {
+    @include flex(flex-start, center, row);
+  }
+}
+
+.cerrarModal {
+  @include flex(center, center, row);
+
+  background-color: $red;
+  border-radius: 0.5rem;
+  color: $blanco;
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.commentboxModal {
+  @include flex(space-between, center, column);
+
+  padding: 1rem;
+  border-bottom: 1px solid $gris2;
+  width: 100%;
+}
+
+.modalCuadroTexto {
+  @include flex(space-between, flex-start, row);
+
+  width: 80%;
+  background-color: $blanco;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.userModal {
+  @include flex(space-between, flex-start, row);
+
+  background-color: $blanco;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  width: 100%;
+}
+
+.fecha {
+  font-size: 1.2rem;
+}
+
+.commentSection {
+  @include flex(space-between, flex-start, column);
+
+  background-color: #fff;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  width: 95%;
+
+  .commentUpdate {
+    padding-right: 2rem;
+  }
+}
+
+.commentTextarea {
+  @include flex(center, center, column);
+
+  display: flex;
+  padding: 1.5rem;
+  width: 100%;
+
+  .modalTextarea {
+    @include flex(flex-start, flex-start, column);
+
+    border-radius: 0.5rem;
+    height: 10rem;
+    width: 50rem;
+  }
+}
+
+.containerArea {
+  @include flex(flex-start, flex-start, row);
+
+  gap: 5px;
+}
+
+.buttonUpdate {
+  margin-top: 5px;
+  padding: 10px;
+  background-color: $gris2;
+  color: $blanco;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.voiceButton {
+  width: 45px;
+  padding: 10px;
+  background-color: $gris2;
+  color: $blanco;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.spinner {
+  padding: 30px;
+}

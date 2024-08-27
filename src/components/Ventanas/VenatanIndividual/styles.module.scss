@@ -1,0 +1,56 @@
+@import '../../../scss/colors';
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.description.expanded {
+  -webkit-line-clamp: unset;
+  display: block;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  color: $blue;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.actions {
+  @include flex(center, center, row);
+
+  gap: 1.5px;
+
+  .buttonComment {
+    background-color: $gris3;
+    color: $blanco;
+    border-radius: 0.5rem;
+    width: 30px;
+    height: 30px;
+  }
+
+  .buttonModal {
+    background-color: $selected;
+    color: $blanco;
+    border-radius: 0.5rem;
+    width: 30px;
+    height: 30px;
+  }
+
+  .buttonBorrar {
+    background-color: $red;
+    color: $blanco;
+    border-radius: 0.5rem;
+    width: 30px;
+    height: 30px;
+  }
+}

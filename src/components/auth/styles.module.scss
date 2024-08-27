@@ -1,0 +1,64 @@
+@import '../../scss/colors';
+@import '../../scss/mixins';
+@import '../../scss/variables';
+
+.formLogin {
+  @include flex(center, center);
+  height: 100vh;
+  background-color: $gris2;
+}
+
+.alerta {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 1rem 3rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 2.2rem;
+  text-align: center;
+  width: 100%;
+}
+
+.formContainer {
+  padding: 5rem 3rem;
+  max-width: 50rem;
+  width: 95%;
+  background-color: $blanco;
+  border-radius: 1rem;
+
+  -webkit-box-shadow: 0 0.6rem 1.1rem -0.8rem #000000e6;
+  -moz-box-shadow: 0 0.6rem 1.1rem -0.8rem #000000e6;
+  box-shadow: 0 0.6rem 1.1rem -0.8rem #000000e6;
+}
+
+.campoForm {
+  @include flex;
+
+  margin-bottom: 2rem;
+  align-items: center;
+
+  &:last-of-type {
+    margin: 0;
+  }
+
+  label {
+    flex: 0 0 100px;
+    font-size: 1.2rem;
+  }
+
+  input[type='password'],
+  input[type='email'],
+  input[type='text'] {
+    border: 1px solid #e1e1e1;
+    padding: 1rem;
+    flex: 1;
+  }
+}
+
+.newAccount {
+  display: block;
+  margin-top: 2rem;
+  opacity: 0.7;
+}

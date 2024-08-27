@@ -1,0 +1,24 @@
+@mixin flex($justify: center, $align: center, $direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+@mixin responsive($breakpoint) {
+  @media screen and (min-width: map-get($available-breakpoints, $breakpoint)) {
+    @content;
+  }
+}
+
+@mixin background-image(
+  $url,
+  $size: contain,
+  $position: center,
+  $repeat: no-repeat
+) {
+  background-image: url($url);
+  background-repeat: $repeat;
+  background-position: $position;
+  background-size: $size;
+}

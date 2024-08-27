@@ -1,0 +1,43 @@
+@import '../../../scss/colors';
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+.list {
+  @include flex(left, start, row);
+
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.butnSemana {
+  @include flex(center, center, row);
+
+  background-color: $gris1;
+  border-radius: 0.4rem;
+  border: none;
+  box-shadow: $box-shadow;
+  color: $gris3;
+  height: 30px;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  transition: background-color 0.3s ease;
+  width: 15rem;
+  font-size: 16px;
+
+  &:hover {
+    background-color: lighten($selected, 10%);
+  }
+
+  p {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.active {
+  background-color: lighten($selected, 10%);
+  color: $blanco;
+}

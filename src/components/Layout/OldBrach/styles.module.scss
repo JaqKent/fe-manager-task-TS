@@ -1,0 +1,51 @@
+@import '../../../scss/colors';
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+.container {
+  flex: 1;
+  padding-bottom: 4rem;
+  margin-top: 6rem;
+}
+
+.tituloTable {
+  font-size: 15px !important;
+
+  /* border: 1px solid #ffffff; */
+  width: 10%;
+  word-break: break-all;
+}
+
+.tarea {
+  @include flex(space-between, center);
+
+  background-color: $blanco;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  overflow-y: scroll;
+  height: 21rem;
+}
+
+.center {
+  @include flex(space-between, center, column);
+
+  margin-top: 0.5rem;
+}
+
+.button {
+  height: 60px;
+  background-color: $selected;
+  color: $blanco;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  padding: 15px;
+}
+
+.text {
+  @include flex(space-between, center);
+
+  margin-bottom: 80px;
+  font-weight: bold;
+}

@@ -1,0 +1,9 @@
+@import '../../../scss/colors';
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+.container {
+  @include flex(center, center, column);
+
+  margin: 80px;
+}
