@@ -1,0 +1,67 @@
+@import '../../../scss/colors';
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+.list {
+  @include flex(left, start, row);
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.butnIncidencia {
+  @include flex(left, center, row);
+
+  background-color: $gris1;
+  border-radius: 0.4rem;
+  border: none;
+  box-shadow: $box-shadow;
+  color: $gris3;
+  height: 30px;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  transition: background-color 0.3s ease;
+  width: 17.5rem;
+
+  &:hover {
+    background-color: lighten($selected, 10%);
+  }
+
+  p {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.active {
+  background-color: lighten($selected, 10%);
+  color: $blanco;
+}
+
+// Estilos para el botón de borrar
+.butnOrder {
+  @include flex(column);
+}
+
+.butnBorrar {
+  @include flex(center, center);
+
+  background-color: $red;
+  border-radius: 5px;
+  border: none;
+  box-shadow: $itemShadow;
+  color: $blanco;
+  font-size: 14px;
+  height: 24px;
+  line-height: 24px;
+  margin: 0.5rem;
+  transition: background-color 0.3s ease;
+  width: 24px;
+
+  &:hover {
+    background-color: darken($red, 20%);
+  }
+}

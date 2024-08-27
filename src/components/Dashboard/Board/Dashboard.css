@@ -1,0 +1,33 @@
+.fondo-color-cork {
+  background: url('./superficie-corcho.jpg');
+  height: 70vh;
+  width: 70vw;
+  margin: 10px 10px 10px 100px;
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 2% !important;
+  color: #fff;
+  text-align: center;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+.dropdown button {
+  width: 100%;
+}
+
+.back-button {
+  margin-left: 0.8em;
+}

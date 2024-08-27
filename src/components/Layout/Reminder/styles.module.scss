@@ -1,0 +1,38 @@
+@import '../../../scss/colors';
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+.reminder {
+  width: 80rem;
+  color: $blanco;
+  font-weight: bold;
+  padding: 1rem;
+  background-color: $gris2;
+  position: absolute;
+  z-index: 999;
+  top: 10rem;
+  right: 10rem;
+  border-radius: 0.5rem;
+  box-shadow: 1px 0 45px 5px rgb(0 0 0 / 68%);
+}
+
+.listaReminder {
+  width: 60rem;
+}
+
+.orderlistReminder {
+  padding-bottom: 0.6rem;
+}
+
+.reminderButn {
+  margin: 0 1rem;
+  background-color: $gris1;
+  color: $gris3;
+  border-radius: 0.5rem;
+}
+
+.butnBorrar {
+  background-color: $red;
+  color: $blanco;
+  border-radius: 0.5rem;
+}

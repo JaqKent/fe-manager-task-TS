@@ -1,0 +1,205 @@
+.hidden {
+  display: none !important;
+  visibility: hidden;
+}
+
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.clearfix::before,
+.clearfix::after {
+  content: ' ';
+  display: table;
+}
+
+.clearfix::after {
+  clear: both;
+}
+
+.noflick,
+#board,
+.note,
+.button {
+  perspective: 1000;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.note {
+  float: left;
+  display: block;
+  position: relative;
+  padding: 0.25em 0.75em;
+  width: 250px;
+  min-height: 300px;
+  background: linear-gradient(to left rgb(0 0 0 / 5%), rgb(0 0 0 / 25%));
+  background-color: #fffd75;
+  box-shadow: 5px 5px 10px -2px rgb(33 33 33 / 30%);
+  transform: rotate(2deg);
+  transform: skew(-1deg, 1deg);
+  transition: transform 0.15s;
+  z-index: 1;
+  color: #000 !important;
+  cursor: move !important;
+}
+
+.note:hover {
+  cursor: move;
+}
+
+.note.ui-draggable-dragging:nth-child(n) {
+  box-shadow: 5px 5px 15px 0 rgb(0 0 0 / 30%);
+  transform: scale(1.125) !important;
+  z-index: 100;
+  cursor: move;
+  transition: transform 0.15s;
+}
+
+.note_completed {
+  background: #ff7575;
+}
+
+.note_active {
+  background: #c9d157;
+}
+
+.note textarea {
+  background-color: transparent;
+  border: none;
+  resize: none;
+  font-family: 'Gloria Hallelujah', cursive;
+  width: 100%;
+  padding: 5px;
+}
+
+.note textarea:focus {
+  outline: none;
+  border: none;
+  box-shadow: 0 0 5px 1px rgb(0 0 0 / 20%) inset;
+}
+
+.note textarea.title {
+  font-size: 20px;
+  line-height: 1.2;
+  color: #000;
+  overflow-y: hidden;
+  resize: none;
+}
+
+.note textarea.cnt {
+  min-height: 100px;
+  max-height: 250px;
+}
+
+.note textarea:disabled {
+  color: #000;
+}
+
+.markdown-size {
+  min-height: 125px;
+
+  /* max-height: 250px; */
+}
+
+.note textarea.cnt p {
+  font-size: 12px;
+}
+
+/* Button style */
+.button {
+  font:
+    bold 16px Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.note:hover .button.remove {
+  cursor: pointer;
+}
+
+small,
+.small_time {
+  font-size: 10px;
+}
+
+.text-ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.note_header_dropdown,
+.note_header_dropdown:hover,
+.note_header_dropdown:focus,
+.note_header_dropdown_menu,
+.note_dropdown_list {
+  color: #000 !important;
+  border: none !important;
+  background: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.note_header_dropdown_menu {
+  background: #fff !important;
+  z-index: 10 !important;
+  transform: translate(-125px, 35px) !important;
+}
+
+.note_header_dropdown::after {
+  display: none !important;
+}
+
+.description-size {
+  font-size: 16px;
+}
+
+.markdown-container {
+  max-height: 125px;
+}
+
+@media (width <= 480px) {
+  .note {
+    width: 200px;
+  }
+
+  .note textarea.cnt {
+    min-height: 120px;
+  }
+
+  .small_time {
+    font-size: 8px;
+  }
+
+  .note textarea.title {
+    font-size: 16px;
+  }
+}
+
+@media (width <= 320px) {
+  .font-size {
+    font-size: 12px;
+  }
+}
