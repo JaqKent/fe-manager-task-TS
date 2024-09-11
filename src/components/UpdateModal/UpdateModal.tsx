@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
@@ -10,6 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CommentIncidencia } from 'Interfaces/CommentsIncidencias';
+import { CommentVentana } from 'Interfaces/CommentVentana';
 
 import { createSpeechRecognitionUtils } from '~utils/VoiceRecognition';
 
@@ -20,7 +22,7 @@ interface UpdateModalProps {
   handleClose: () => void;
   handleSubmit: (formData: Record<string, any>) => void;
   title: string;
-  data: CommentIncidencia[];
+  data: CommentIncidencia[] | CommentVentana[];
   handleDeleteUpdate: (commentId: string) => Promise<void>;
 }
 

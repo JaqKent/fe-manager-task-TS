@@ -4,11 +4,11 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import ListadoVentana from '~components/Ventanas/ListadoVentana/ListadoVentana';
 import { useAuthContext } from '~contexts/auth/AuthContext';
 import { useSemanaContext } from '~contexts/Semana/Semana';
 
 import SemanasSidebar from '../../../Semanas/SemanaSideBar/SemanaSideBar';
+import ListadoVentanaBacklog from '../ListadoVentanaBacklog/ListadoVentanaBacklog';
 
 import styles from './styles.module.scss';
 
@@ -38,7 +38,7 @@ function BacklogVentanaMain() {
       <div className={styles.seccionPrincipal}>
         <main>
           <div className={styles.contenedorTareas}>
-            <ListadoVentana />
+            <ListadoVentanaBacklog />
           </div>
         </main>
       </div>

@@ -1,8 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable react/no-children-prop */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaMicrophoneAlt, FaRegStopCircle } from 'react-icons/fa';
@@ -42,10 +37,18 @@ function Note({ note, noteList, handleList }: NoteProps) {
   const { startRecognition, stopRecognition, onResult, onError } =
     createSpeechRecognitionUtils();
 
+  const { updateNote, getActualNote } = useNoteContext();
+
   useEffect(() => {
     onResult((transcript: string) => {
       setTranscript(transcript);
       setNoteValues((prev) => ({ ...prev, description: transcript }));
+      // Guardar automáticamente cada vez que se actualiza la transcripción
+      updateNote(
+        note._id,
+        { ...noteValues, description: transcript },
+        'update'
+      );
     });
 
     onError((error: string) => {
@@ -55,7 +58,7 @@ function Note({ note, noteList, handleList }: NoteProps) {
     return () => {
       stopRecognition();
     };
-  }, [onResult, onError, stopRecognition]);
+  }, [onResult, onError, stopRecognition, noteValues, updateNote, note._id]);
 
   useEffect(() => {
     if (isListening) {
@@ -69,8 +72,6 @@ function Note({ note, noteList, handleList }: NoteProps) {
     setNoteValues(note);
   }, [note]);
 
-  const { updateNote, getActualNote } = useNoteContext();
-
   const saveNote = (e: React.FocusEvent<HTMLFormElement>) => {
     const noteId = e.target.closest('form')?.id;
     if (noteId) {
@@ -80,6 +81,8 @@ function Note({ note, noteList, handleList }: NoteProps) {
           title: noteValues.title,
           description: noteValues.description,
           active: noteValues.active,
+          ejeX: noteValues.ejeX,
+          ejeY: noteValues.ejeY,
         },
         'update'
       );
@@ -94,15 +97,13 @@ function Note({ note, noteList, handleList }: NoteProps) {
     <Rnd
       default={{ x: note.ejeX, y: note.ejeY }}
       onDragStop={(e, d) => {
-        handleList(
-          noteList.map((n) =>
-            n._id === note._id
-              ? { ...noteValues, ejeX: d.lastX, ejeY: d.lastY }
-              : n
-          )
+        const updatedNotes = noteList.map((n) =>
+          n._id === note._id ? { ...noteValues, ejeX: d.x, ejeY: d.y } : n
         );
+        handleList(updatedNotes);
+        setNoteValues((prev) => ({ ...prev, ejeX: d.x, ejeY: d.y }));
+        updateNote(note._id, { ...noteValues, ejeX: d.x, ejeY: d.y }, 'update');
       }}
-      disableDragging={showMarkdown}
       bounds='parent'
     >
       <form

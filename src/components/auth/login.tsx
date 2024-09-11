@@ -127,7 +127,7 @@ function Login() {
                 disabled
                 className='btn btn-outline-primary btn-lg'
               >
-                Iniciando sesión
+                Iniciando sesión por favor aguarde un momento
               </button>
             ) : (
               <button type='submit' className='btn btn-outline-primary btn-lg'>

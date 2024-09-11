@@ -9,7 +9,7 @@
 .textBranch {
   @include flex(center, center, row);
 
-  margin-left: 6rem;
+  margin: 0 6rem 3rem 0;
 }
 
 .mensajeConfirmacion {

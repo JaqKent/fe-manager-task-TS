@@ -23,11 +23,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Semana } from 'Interfaces/Semana';
-import { Ventana } from 'Interfaces/ventana';
+import { Ventana } from 'Interfaces/Ventana';
 
 import CustomModal from '~components/CustomModal/CustomModal';
+import UpdateModal from '~components/UpdateModal/UpdateModal';
 import { ADD_ITEM_FORM, VentanaTable } from '~constants/constants';
 import { useAuthContext } from '~contexts/auth/AuthContext';
+import { useCommentVentanaContext } from '~contexts/CommentVentana/CommentVentana';
 import { useSemanaContext } from '~contexts/Semana/Semana';
 import { useVentanaContext } from '~contexts/Ventana/Ventana';
 
@@ -35,9 +37,7 @@ import VentanaIndividual from '../../../Ventanas/VenatanIndividual/VentanaIndivi
 
 import styles from './styles.module.scss';
 
-/* import UpdateModal from '../UpdateModal/UpdateModal';  */
-
-function ListadoVentana() {
+function ListadoVentanaEnBacklog() {
   const [ventanaFiltered, setVentanaFiltered] = useState<Ventana[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -54,9 +54,8 @@ function ListadoVentana() {
   const [selectedSemana, setSelectedSemana] = useState<string>('');
   const [mensajeConfirmacion, setMensajeConfirmacion] =
     useState<boolean>(false);
-  const location = useLocation();
 
-  const { semanas, limpiarSemana, limpiarSemanas } = useSemanaContext();
+  const { semanas } = useSemanaContext();
 
   const { user } = useAuthContext();
 
@@ -70,6 +69,14 @@ function ListadoVentana() {
     actualizarVentana,
     limpiarVentanaSemana,
   } = useVentanaContext();
+
+  const {
+    commentVentanas,
+    obtenerComments,
+    agregarComment,
+    eliminarComment,
+    limpiarComments,
+  } = useCommentVentanaContext();
 
   const [newWindow, setNewWindow] = useState<{
     descripcion: string;
@@ -98,6 +105,12 @@ function ListadoVentana() {
     impactoNotificacion: '',
     enBacklog: false,
   });
+
+  const obtenerIdUsuarioCreador = (): string | null => {
+    const id = user?._id || null;
+
+    return id;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value, type, checked } = e.target;
@@ -173,17 +186,17 @@ function ListadoVentana() {
     limpiarVentana();
   };
 
-  /* const handleSubmitUpdate = async (formData: any): Promise<void> => {
+  const handleSubmitUpdate = async (formData: any): Promise<void> => {
     try {
       const idUsuarioCreador = obtenerIdUsuarioCreador();
 
       const updateVentana = {
         ...formData,
-        ventana: ventanaseleccionada._id,
+        ventanas: ventanaseleccionada._id,
         usuarioCreador: idUsuarioCreador,
       };
 
-      await addComment(updateVentana);
+      await agregarComment(updateVentana);
 
       setDataComment({
         update: '',
@@ -191,13 +204,24 @@ function ListadoVentana() {
       });
 
       setLoading(true);
-      await getComments(ventanaseleccionada._id);
+      await obtenerComments(ventanaseleccionada._id);
       setLoading(false);
     } catch (error) {
       console.error(error);
     }
-  }; */
+  };
 
+  const handleDeleteUpdate = async (commentId: string) => {
+    try {
+      setLoading(true);
+      await eliminarComment(commentId);
+      await obtenerComments(ventanaseleccionada._id);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const fields = ADD_ITEM_FORM.map((item) => ({
     name: item.name,
     label: item.label,
@@ -222,27 +246,28 @@ function ListadoVentana() {
 
   useEffect(() => {
     if (ventanaseleccionada) {
-      getComments(ventanaseleccionada._id);
+      limpiarComments();
+      obtenerComments(ventanaseleccionada._id);
     }
   }, [ventanaseleccionada]);
 
   if (!semanaActual || ventanasemana === null)
     return <h2 className={styles.textoProyecto}>Selecciona una Semana</h2>;
 
-  const handleShow = async (): Promise<void> => {
-    const newShowValue = !show;
-    setShow(newShowValue);
-
-    if (newShowValue) {
-      if (ventanaseleccionada && ventanaseleccionada._id) {
-        setCommentLoading(true);
-        await getComments(ventanaseleccionada._id);
+  const handleShow = async () => {
+    if (!show && ventanaseleccionada?._id) {
+      setShow(true);
+      setCommentLoading(true);
+      limpiarComments();
+      try {
+        await obtenerComments(ventanaseleccionada._id);
+      } catch (error) {
+        console.error('Error al obtener comentarios:', error);
+      } finally {
         setCommentLoading(false);
-      } else {
-        console.error(
-          'ventanaseleccionada o ventanaseleccionada._id es undefined'
-        );
       }
+    } else {
+      setShow(false);
     }
   };
 
@@ -396,21 +421,18 @@ function ListadoVentana() {
                 showWeek
                 typelabel='backlog'
               />
-              {/* <div className='modal-update'>
-                {commentVentana && (
+              <div className='modal-update'>
+                {commentVentanas && (
                   <UpdateModal
                     show={show}
                     handleClose={handleShow}
                     handleSubmit={handleSubmitUpdate}
                     handleDeleteUpdate={handleDeleteUpdate}
-                    title={
-                      ventanaseleccionada ? ventanaseleccionada.descripcion : ''
-                    }
-                    date={ventanaseleccionada ? ventanaseleccionada.date : ''}
-                    data={commentVentana}
+                    data={commentVentanas}
+                    title={ventanaseleccionada?.descripcion || ''}
                   />
                 )}
-              </div> */}
+              </div>
             </>
           )}
         </>
@@ -419,4 +441,4 @@ function ListadoVentana() {
   );
 }
 
-export default ListadoVentana;
+export default ListadoVentanaEnBacklog;

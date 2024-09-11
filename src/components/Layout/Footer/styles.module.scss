@@ -3,18 +3,19 @@
 @import '../../../scss/variables';
 
 .footer {
+  @include flex(flex-start, center, row);
+
+  padding-left: 5rem;
   position: fixed;
   bottom: 0;
   left: 0;
-
   flex: 0 0 auto;
-
   width: 100%;
-
-  padding: 2.5rem 0;
-
+  height: 5rem;
   color: #f0f9ff;
-  text-align: center;
-
   background-color: $gris2;
+
+  h3 {
+    margin: 0;
+  }
 }

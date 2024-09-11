@@ -7,7 +7,6 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import IconButton from '@mui/material/IconButton';
@@ -34,16 +33,13 @@ import DataIncidencias from '../DataIncidencias/DataIncidencias';
 import styles from './styles.module.scss';
 
 function ListadoInfoIncidencia() {
-  const [incidenciaFiltered, setIncidenciaFiltered] = useState<Incidencia[]>(
-    []
-  );
   const [modal, setModal] = useState<boolean>(false);
   const [localLoading, setLocalLoading] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const [commentLoading, setCommentLoading] = useState<boolean>(false);
   const [mensajeConfirmacion, setMensajeConfirmacion] =
     useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+
   const [dataComment, setDataComment] = useState<{
     update: string;
     usuarioCreador: string;
@@ -262,22 +258,6 @@ function ListadoInfoIncidencia() {
     },
   }));
 
-  const search = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    if (query.trim() === '') {
-      setIncidenciaFiltered(incidencias);
-    } else {
-      const incidenciaQuery = incidencias.filter(
-        (incidencia) =>
-          incidencia.descripcion &&
-          incidencia.descripcion.toLowerCase().includes(query.toLowerCase())
-      );
-      setIncidenciaFiltered(incidenciaQuery);
-    }
-  };
-
   if (incidenciaSeleccionada === null) {
     return <h2 className={styles.textoProyecto}>Selecciona una incidencia</h2>;
   }
@@ -309,24 +289,6 @@ function ListadoInfoIncidencia() {
         </Stack>
       ) : (
         <>
-          <Paper
-            className='search-input'
-            component='form'
-            sx={{ p: '2px 4px', display: 'flex', width: 400 }}
-          >
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder='Buscar por descripción'
-              inputProps={{ 'aria-label': 'search' }}
-              value={searchQuery}
-              onChange={search}
-              className={styles.searchInput}
-            />
-            <IconButton type='button' sx={{ p: '10px' }} aria-label='search'>
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
@@ -346,25 +308,15 @@ function ListadoInfoIncidencia() {
             </Table>
           </TableContainer>
 
-          {incidenciaFiltered.length > 0
-            ? incidenciaFiltered.map((incidenciaFiltrada) => (
-                <div>
-                  <DataIncidencias
-                    incidencia={incidenciaFiltrada}
-                    openModal={openModal}
-                    handleShow={handleShow}
-                  />
-                </div>
-              ))
-            : incidenciaSeleccionada && (
-                <div>
-                  <DataIncidencias
-                    incidencia={incidenciaSeleccionada}
-                    openModal={openModal}
-                    handleShow={handleShow}
-                  />
-                </div>
-              )}
+          {incidenciaSeleccionada && (
+            <div>
+              <DataIncidencias
+                incidencia={incidenciaSeleccionada}
+                openModal={openModal}
+                handleShow={handleShow}
+              />
+            </div>
+          )}
 
           <CustomModal
             show={modal}

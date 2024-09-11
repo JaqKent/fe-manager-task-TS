@@ -1,57 +1,68 @@
-import React, { useEffect, useState } from 'react';
-import moment from 'moment';
+import { useEffect, useState } from 'react';
+import moment from 'moment-timezone';
 
+import clienteAxios from '~config/axios';
 import { useSemanaContext } from '~contexts/Semana/Semana';
 
-import 'moment/locale/es'; // Importa el idioma español
+import 'moment/locale/es';
 
-// Establece el idioma a español
 moment.locale('es');
 
 function NuevaSemanaAutomatica() {
   const { agregarSemana, obtenerSemanas } = useSemanaContext();
   const [mensajeConfirmacion, setMensajeConfirmacion] = useState('');
-  const [modoPrueba, setModoPrueba] = useState(false); // Nuevo estado para el modo de prueba
+  const [semanasYaExisten, setSemanasYaExisten] = useState(false);
 
   const createWeeksForYear = async (year: number) => {
-    // Obtiene las semanas existentes del contexto para el año actual
     const existingWeeks = await fetchWeeks();
-    const startDate = moment().year(year).startOf('year');
-    const endDate = moment().year(year).endOf('year');
+
+    const startDate = moment
+      .tz(`${year}-01-01`, 'America/Argentina/Buenos_Aires')
+      .startOf('year');
+    const endDate = moment
+      .tz(`${year}-12-31`, 'America/Argentina/Buenos_Aires')
+      .endOf('year');
 
     const weeks = [];
-    const currentStartDate = startDate.clone().startOf('isoWeek').isoWeekday(1); // Comienza el lunes de la primera semana
+
+    const currentStartDate = startDate
+      .clone()
+      .startOf('isoWeek')
+      .isoWeekday(1)
+      .add(1, 'week');
+
+    const existingWeeksSet = new Set(
+      existingWeeks.map((semana) =>
+        moment(semana.startDate).startOf('isoWeek').format('YYYY-MM-DD')
+      )
+    );
+
+    console.log('Conjunto de semanas existentes:', existingWeeksSet);
 
     while (currentStartDate.isBefore(endDate)) {
-      const currentEndDate = currentStartDate.clone().add(4, 'days'); // Solo de lunes a viernes
+      const weekStart = currentStartDate.format('YYYY-MM-DD');
 
-      const newWeek = {
-        year: year.toString(),
-        month: currentStartDate.format('MMMM'), // Nombre del mes en español
-        startDate: currentStartDate.toDate(),
-        endDate: currentEndDate.toDate(),
-        fechaCreacion: new Date(),
-      };
-
-      // Verifica si la semana ya existe en las semanas existentes
-      const exists = existingWeeks.some((semana) =>
-        moment(semana.startDate).isSame(newWeek.startDate, 'week')
-      );
-
-      if (!exists) {
-        weeks.push(newWeek);
+      if (!existingWeeksSet.has(weekStart)) {
+        weeks.push({
+          year: year.toString(),
+          month: currentStartDate.format('MMMM'),
+          startDate: currentStartDate.toDate(),
+          endDate: currentStartDate.clone().add(4, 'days').toDate(),
+          fechaCreacion: new Date(),
+        });
+      } else {
+        console.log(`La semana ${weekStart} ya existe y no será añadida.`);
       }
 
-      currentStartDate.add(1, 'week'); // Mover a la siguiente semana
+      currentStartDate.add(1, 'week');
     }
 
     if (weeks.length > 0) {
-      // Guardar las semanas en el contexto
       for (const semana of weeks) {
-        await agregarSemana(semana); // Asegúrate de que agregarSemana sea una función asincrónica si es necesario
+        console.log('Guardando semana:', semana); // Log para cada semana que se guarda
+        await agregarSemana(semana);
       }
 
-      // Confirmación
       setMensajeConfirmacion('¡Las semanas se han creado con éxito!');
       setTimeout(() => {
         setMensajeConfirmacion('');
@@ -62,17 +73,19 @@ function NuevaSemanaAutomatica() {
       );
     }
 
-    // Actualiza la lista de semanas después de agregar nuevas
     await obtenerSemanas();
   };
 
   const fetchWeeks = async () => {
     try {
-      const response = await fetch('/api/weeks');
-      const semanas = await response.json();
-      return semanas;
+      const response = await clienteAxios.get('/weeks');
+
+      return response.data;
     } catch (error) {
-      console.error('Error fetching semanas:', error);
+      console.error(
+        'Error fetching semanas:',
+        error.response ? error.response.data : error.message
+      );
       return [];
     }
   };
@@ -84,26 +97,23 @@ function NuevaSemanaAutomatica() {
       (semana: any) => parseInt(semana.year, 10) === currentYear
     );
 
+    console.log('¿Existen semanas para el año actual?', yearHasWeeks);
     if (!yearHasWeeks) {
       await createWeeksForYear(currentYear);
+      setSemanasYaExisten(false);
     } else {
       setMensajeConfirmacion(
         'Las semanas ya están creadas para el año actual.'
       );
+      setSemanasYaExisten(true);
     }
   };
 
   useEffect(() => {
-    if (modoPrueba) {
-      initializeWeeks(); // Ejecuta la inicialización inmediatamente en modo prueba
-      return; // No realiza la verificación automática en modo prueba
-    }
-
     const lastCheck = localStorage.getItem('lastCheckDate');
     const now = new Date().getTime();
-    const oneDay = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+    const oneDay = 24 * 60 * 60 * 1000;
 
-    // Inicializa semanas si no hay datos o si ha pasado un día desde la última verificación
     if (!lastCheck || now - parseInt(lastCheck, 10) > oneDay) {
       initializeWeeks();
       localStorage.setItem('lastCheckDate', now.toString());
@@ -121,16 +131,15 @@ function NuevaSemanaAutomatica() {
     }, oneDay);
 
     return () => clearInterval(intervalId);
-  }, [modoPrueba]); // Dependencia para actualizar si cambia el modo de prueba
-
-  const handleCreateWeeksForTesting = () => {
-    setModoPrueba(false);
-  };
+  }, []);
 
   return (
     <div>
       <p
         style={{
+          position: 'absolute',
+          top: '100px',
+          left: '10px',
           textAlign: 'center',
           marginBottom: '20px',
           fontSize: '18px',

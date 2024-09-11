@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/control-has-associated-label */
@@ -50,8 +51,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 interface VentanaProps {
   ventana: Ventana;
-  openModal: () => void;
-  handleShow: () => void;
+  openModal?: () => void;
+  handleShow?: () => void;
 }
 
 function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {

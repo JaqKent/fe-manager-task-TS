@@ -41,3 +41,9 @@
   background-color: lighten($selected, 10%);
   color: $blanco;
 }
+
+.disabledButton {
+  background-color: $disabled;
+  cursor: not-allowed;
+  color: $gris2;
+}

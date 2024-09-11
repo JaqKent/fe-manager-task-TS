@@ -45,9 +45,9 @@
 }
 
 .appHeaderBranch {
-  @include flex(flex-end, center, row);
+  @include flex(space-between, center, row);
 
-  margin-top: -50px;
+  margin-bottom: 30px;
 
   .buttonCrearVentana {
     @include flex(center, center, row);
@@ -67,10 +67,4 @@
       background-color: lighten($selected, 10%);
     }
   }
-}
-
-.header {
-  @include flex(flex-start, center, row);
-
-  margin-bottom: 10px;
 }
