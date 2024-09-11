@@ -9,11 +9,8 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -23,6 +20,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Semana } from 'Interfaces/Semana';
+import { Ventana } from 'Interfaces/Ventana';
 
 import CustomModal from '~components/CustomModal/CustomModal';
 import UpdateModal from '~components/UpdateModal/UpdateModal';
@@ -37,7 +35,6 @@ import VentanaIndividual from '../VenatanIndividual/VentanaIndividual';
 import styles from './styles.module.scss';
 
 function ListadoVentana() {
-  const [ventanaFiltered, setVentanaFiltered] = useState<Ventana[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
@@ -277,15 +274,6 @@ function ListadoVentana() {
     }
   };
 
-  const search = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const query = e.target.value.toLowerCase();
-    setVentanaFiltered(
-      ventanasemana.filter((ventana: Ventana) =>
-        ventana.descripcion?.toLowerCase().includes(query)
-      )
-    );
-  };
-
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.primary.main,
@@ -315,7 +303,7 @@ function ListadoVentana() {
           )}
           {semanaActual && (
             <>
-              <div className={styles.header}>
+              <header className={styles.appHeaderBranch}>
                 <h1 className={styles.textBranch}>
                   Semana :{' '}
                   {`${formatFecha(semanaActual.startDate)} - ${formatFecha(
@@ -323,20 +311,17 @@ function ListadoVentana() {
                   )}`}{' '}
                   <br /> Año: {semanaActual.year}
                 </h1>
-              </div>
-              <header className={styles.appHeaderBranch}>
-                <nav className={styles.navPrincipal}>
-                  <button
-                    className={styles.buttonCrearVentana}
-                    type='button'
-                    onClick={() => {
-                      buttonNuevaVentana();
-                      openModal();
-                    }}
-                  >
-                    Crear Ventana
-                  </button>
-                </nav>
+
+                <button
+                  className={styles.buttonCrearVentana}
+                  type='button'
+                  onClick={() => {
+                    buttonNuevaVentana();
+                    openModal();
+                  }}
+                >
+                  Crear Ventana
+                </button>
               </header>
 
               {ventanasemana.length === 0 ? (
@@ -348,32 +333,6 @@ function ListadoVentana() {
                 </Stack>
               ) : (
                 <div>
-                  <Paper
-                    className='search-input'
-                    component='form'
-                    sx={{ p: '2px 4px', display: 'flex', width: 400 }}
-                  >
-                    <InputBase
-                      className={styles.searchInput}
-                      sx={{ ml: 1, flex: 1 }}
-                      placeholder='Buscar Por Descripcion'
-                      inputProps={{ 'aria-label': 'Buscar', fontSize: 14 }}
-                      onChange={search}
-                    />
-                    <IconButton
-                      sx={{ p: '10px' }}
-                      style={{
-                        pointerEvents: 'none',
-                        width: '8%',
-                        fontSize: 14,
-                      }}
-                      aria-label='search'
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </Paper>
-                  <br />
-
                   <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 700 }} aria-label='customized table'>
                       <TableHead>
@@ -392,25 +351,15 @@ function ListadoVentana() {
                       </TableHead>
                     </Table>
                   </TableContainer>
-                  {ventanaFiltered.length > 0
-                    ? ventanaFiltered.map((ventana) => (
-                        <div>
-                          <VentanaIndividual
-                            ventana={ventana}
-                            openModal={openModal}
-                            handleShow={handleShow}
-                          />
-                        </div>
-                      ))
-                    : ventanasEnBacklogFalse.map((ventana: Ventana) => (
-                        <div>
-                          <VentanaIndividual
-                            ventana={ventana}
-                            openModal={openModal}
-                            handleShow={handleShow}
-                          />
-                        </div>
-                      ))}
+                  {ventanasEnBacklogFalse.map((ventana: Ventana) => (
+                    <div>
+                      <VentanaIndividual
+                        ventana={ventana}
+                        openModal={openModal}
+                        handleShow={handleShow}
+                      />
+                    </div>
+                  ))}
                 </div>
               )}
               <CustomModal

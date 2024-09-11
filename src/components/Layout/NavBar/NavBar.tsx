@@ -8,6 +8,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '~contexts/auth/AuthContext';
 
 import Reminder from '../Reminder/Reminder';
+import SearchBar from '../Searchbar/SearchBar';
 
 function CustomNavbar() {
   // Extraer la información de autenticación
@@ -28,7 +29,7 @@ function CustomNavbar() {
   return (
     <Navbar
       expand='xl'
-      className='bg-body-tertiary  fixed-top'
+      className='bg-body-tertiary  fixed-top '
       data-bs-theme='dark'
       style={{ height: '80px', padding: '20px' }}
     >
@@ -72,9 +73,10 @@ function CustomNavbar() {
               modalReminder();
             }}
           >
-            Ventana semana siguiente
+            Ventanas Proximas
           </Nav.Link>
         </Nav>
+        <SearchBar />
         <Reminder
           mostrarRecordatorio={mostrarRecordatorio}
           setMostrarRecordatorio={setMostrarRecordatorio}

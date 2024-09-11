@@ -35,131 +35,135 @@ if (token) {
 
 function App() {
   return (
-    <>
-      <IncidenciaProvider>
-        <AlertaProvider>
-          <AuthProvider>
-            <SemanaProvider>
-              <VentanaProvider>
-                <IncidenciaProvider>
-                  <CommentIncidenciaProvider>
-                    <CommentVentanaProvider>
-                      <NoteProvider>
-                        <InformesVentanaProvider>
-                          <InformesIncidenciaProvider>
-                            <NuevaSemanaAutomatica />
-                            <Router>
-                              <Routes>
-                                {/* Rutas que no requieren autenticación */}
-                                <Route path='/' element={<Login />} />
-                                <Route
-                                  path='/nueva-cuenta'
-                                  element={<NuevaCuenta />}
-                                />
-                                {/* Rutas que requieren autenticación */}
-                                <Route
-                                  path='/incidencias/*'
-                                  element={
-                                    <RutaPrivada>
-                                      <>
-                                        <CustomNavbar />
-                                        <Incidencias />
-                                      </>
-                                    </RutaPrivada>
-                                  }
-                                />
-                                <Route
-                                  path='/weeks/*'
-                                  element={
-                                    <RutaPrivada>
-                                      <>
-                                        <CustomNavbar />
-                                        <Semanas />
-                                      </>
-                                    </RutaPrivada>
-                                  }
-                                />
-                                <Route
-                                  path='/informesHome/*'
-                                  element={
-                                    <RutaPrivada>
-                                      <>
-                                        <CustomNavbar />
-                                        <InformesHome />
-                                      </>
-                                    </RutaPrivada>
-                                  }
-                                />
-                                <Route
-                                  path='/cerrado-incidencias/*'
-                                  element={
-                                    <RutaPrivada>
-                                      <>
-                                        <CustomNavbar />
-                                        <IncidenciaCerrada />
-                                      </>
-                                    </RutaPrivada>
-                                  }
-                                />
-                                <Route
-                                  path='/backlog-ventanas/*'
-                                  element={
-                                    <RutaPrivada>
-                                      <>
-                                        <CustomNavbar />
-                                        <BacklogVentanaMain />
-                                      </>
-                                    </RutaPrivada>
-                                  }
-                                />
-                                <Route
-                                  path='/LegacyBranch/*'
-                                  element={
-                                    <RutaPrivada>
-                                      <>
-                                        <CustomNavbar />
-                                        <LegacyBranch />
-                                      </>
-                                    </RutaPrivada>
-                                  }
-                                />
-                                <Route
-                                  path='/informeIncidencias/*'
-                                  element={
-                                    <RutaPrivada>
-                                      <>
-                                        <CustomNavbar />
-                                        <IncidenciaScreen />
-                                      </>
-                                    </RutaPrivada>
-                                  }
-                                />
-                                <Route
-                                  path='/InformeVentanas/*'
-                                  element={
-                                    <RutaPrivada>
-                                      <>
-                                        <CustomNavbar />
-                                        <VentanaScreen />
-                                      </>
-                                    </RutaPrivada>
-                                  }
-                                />
-                              </Routes>
-                            </Router>
-                          </InformesIncidenciaProvider>
-                        </InformesVentanaProvider>
-                      </NoteProvider>
-                    </CommentVentanaProvider>
-                  </CommentIncidenciaProvider>
-                </IncidenciaProvider>
-              </VentanaProvider>
-            </SemanaProvider>
-          </AuthProvider>
-        </AlertaProvider>
-      </IncidenciaProvider>
-      <Footer />
-    </>
+    <IncidenciaProvider>
+      <AlertaProvider>
+        <AuthProvider>
+          <SemanaProvider>
+            <VentanaProvider>
+              <IncidenciaProvider>
+                <CommentIncidenciaProvider>
+                  <CommentVentanaProvider>
+                    <NoteProvider>
+                      <InformesVentanaProvider>
+                        <InformesIncidenciaProvider>
+                          <NuevaSemanaAutomatica />
+                          <Router>
+                            <Routes>
+                              {/* Rutas que no requieren autenticación */}
+                              <Route path='/' element={<Login />} />
+                              <Route
+                                path='/nueva-cuenta'
+                                element={<NuevaCuenta />}
+                              />
+                              {/* Rutas que requieren autenticación */}
+                              <Route
+                                path='/incidencias/*'
+                                element={
+                                  <RutaPrivada>
+                                    <>
+                                      <CustomNavbar />
+                                      <Incidencias />
+                                      <Footer />
+                                    </>
+                                  </RutaPrivada>
+                                }
+                              />
+                              <Route
+                                path='/weeks/*'
+                                element={
+                                  <RutaPrivada>
+                                    <>
+                                      <CustomNavbar />
+                                      <Semanas />
+                                      <Footer />
+                                    </>
+                                  </RutaPrivada>
+                                }
+                              />
+                              <Route
+                                path='/informesHome/*'
+                                element={
+                                  <RutaPrivada>
+                                    <>
+                                      <CustomNavbar />
+                                      <InformesHome />
+                                    </>
+                                  </RutaPrivada>
+                                }
+                              />
+                              <Route
+                                path='/cerrado-incidencias/*'
+                                element={
+                                  <RutaPrivada>
+                                    <>
+                                      <CustomNavbar />
+                                      <IncidenciaCerrada />
+                                      <Footer />
+                                    </>
+                                  </RutaPrivada>
+                                }
+                              />
+                              <Route
+                                path='/backlog-ventanas/*'
+                                element={
+                                  <RutaPrivada>
+                                    <>
+                                      <CustomNavbar />
+                                      <BacklogVentanaMain />
+                                      <Footer />
+                                    </>
+                                  </RutaPrivada>
+                                }
+                              />
+                              <Route
+                                path='/LegacyBranch/*'
+                                element={
+                                  <RutaPrivada>
+                                    <>
+                                      <CustomNavbar />
+                                      <LegacyBranch />
+                                      <Footer />
+                                    </>
+                                  </RutaPrivada>
+                                }
+                              />
+                              <Route
+                                path='/informeIncidencias/*'
+                                element={
+                                  <RutaPrivada>
+                                    <>
+                                      <CustomNavbar />
+                                      <IncidenciaScreen />
+                                      <Footer />
+                                    </>
+                                  </RutaPrivada>
+                                }
+                              />
+                              <Route
+                                path='/InformeVentanas/*'
+                                element={
+                                  <RutaPrivada>
+                                    <>
+                                      <CustomNavbar />
+                                      <VentanaScreen />
+                                      <Footer />
+                                    </>
+                                  </RutaPrivada>
+                                }
+                              />
+                            </Routes>
+                          </Router>
+                        </InformesIncidenciaProvider>
+                      </InformesVentanaProvider>
+                    </NoteProvider>
+                  </CommentVentanaProvider>
+                </CommentIncidenciaProvider>
+              </IncidenciaProvider>
+            </VentanaProvider>
+          </SemanaProvider>
+        </AuthProvider>
+      </AlertaProvider>
+    </IncidenciaProvider>
   );
 }
 
