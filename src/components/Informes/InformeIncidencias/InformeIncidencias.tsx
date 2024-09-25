@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable import/extensions */
 /* eslint-disable max-lines */
@@ -20,7 +21,7 @@ function IncidenciaScreen() {
     obtenerDetalleCommentIncidencia,
     idsComentariosIncidencias,
     detallesCargados,
-    warning,
+    limpiarCambiosCommentIncidencia,
     setIncidenciaDetallada,
     setDetallesCargados,
   } = useInformesIncidenciaContext();
@@ -45,6 +46,11 @@ function IncidenciaScreen() {
   }, []);
 
   const handleSubmit = () => {
+    setIncidenciaDetallada([]);
+    setDetallesCargados(false);
+    setBusquedaRealizada(false);
+    limpiarCambiosCommentIncidencia();
+
     const formattedStartDate = startDate.toISOString().split('T')[0];
     const formattedEndDate = endDate.toISOString().split('T')[0];
 
@@ -236,7 +242,7 @@ function IncidenciaScreen() {
             <div className={styles.spinner}>
               <Spinner />
             </div>
-          ) : (
+          ) : incidenciaDetallada.length > 0 ? (
             incidenciaDetallada.map((incidencia) => (
               <div key={incidencia._id} className={styles.minutaSeccion}>
                 <h2>Informe de minutas</h2>
@@ -304,19 +310,17 @@ function IncidenciaScreen() {
                 </div>
               </div>
             ))
-          )}
-
-          {warning && busquedaRealizada ? (
-            <Stack sx={{ width: '100%', marginTop: '20px' }} spacing={2}>
-              <Alert severity='warning'>
-                <AlertTitle className='titulo-error1'>Warning</AlertTitle>
-                <b className='titulo-error'>
-                  No hay informes disponibles para las fechas seleccionadas
-                </b>
-              </Alert>
-            </Stack>
           ) : (
-            ''
+            busquedaRealizada && (
+              <Stack sx={{ width: '100%', marginTop: '20px' }} spacing={2}>
+                <Alert severity='info'>
+                  <AlertTitle className='titulo-error1'>Info</AlertTitle>
+                  <b className='titulo-error'>
+                    No hay informes disponibles para las fechas seleccionadas
+                  </b>
+                </Alert>
+              </Stack>
+            )
           )}
         </div>
       </div>

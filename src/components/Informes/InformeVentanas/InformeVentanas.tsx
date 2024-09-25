@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-lines */
 /* eslint-disable import/extensions */
@@ -21,9 +23,9 @@ function VentanaScreen() {
     idsComentariosVentanas,
     ventanaDetallada,
     detallesCargados,
-    warning,
     setDetallesCargados,
     setVentanaDetallada,
+    limpiarCambiosCommentVentana,
   } = useInformesVentanaContext();
 
   const [startDate, setStartDate] = useState(new Date());
@@ -31,7 +33,6 @@ function VentanaScreen() {
   const [loading, setLoading] = useState(false);
   const [busquedaRealizada, setBusquedaRealizada] = useState(false);
 
-  const [ventanasRenderizadas, setVentanasRenderizadas] = useState(new Set());
   useEffect(() => {
     const limpiarEstado = () => {
       setVentanaDetallada([]);
@@ -44,6 +45,11 @@ function VentanaScreen() {
   }, []);
 
   const handleSubmit = () => {
+    setVentanaDetallada([]);
+    setDetallesCargados(false);
+    setBusquedaRealizada(false);
+    limpiarCambiosCommentVentana();
+
     const formattedStartDate = startDate.toISOString().split('T')[0];
     const formattedEndDate = endDate.toISOString().split('T')[0];
 
@@ -83,10 +89,20 @@ function VentanaScreen() {
     }
   }, [cambiosCommentVentana, detallesCargados]);
 
+  useEffect(() => {
+    if (loading) {
+      const timeoutId = setTimeout(() => {
+        setLoading(false);
+      }, 5000); // 5 segundos
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [loading]);
+
   const generarPDF = () => {
     const doc = new jsPDF();
     let yPos = 10;
-    const ventanasRenderizadas = new Set<string>(); // Inicializar el conjunto
+    const ventanasRenderizadas = new Set<string>();
 
     doc.setFontSize(20);
     doc.text('Informe de Minutas Ventanas', 10, yPos);
@@ -104,11 +120,11 @@ function VentanaScreen() {
     ventanaDetallada.forEach((ventana, index) => {
       if (index > 0) {
         doc.addPage();
-        yPos = 10; // Reset position for new page
+        yPos = 10;
       }
 
       if (ventanasRenderizadas.has(ventana._id)) {
-        return; // Skip rendering if already rendered
+        return;
       }
       ventanasRenderizadas.add(ventana._id);
 
@@ -185,7 +201,7 @@ function VentanaScreen() {
         yPos += 10;
         doc.setFontSize(14);
         doc.text('Cambios Realizados:', 10, yPos);
-        yPos += 10; // Add space between 'Cambios Realizados:' and the first change
+        yPos += 10;
 
         updates.forEach((comment) => {
           doc.setFontSize(12);
@@ -208,14 +224,12 @@ function VentanaScreen() {
             doc.text(`Valor Nuevo: ${cambio.valorNuevo}`, 10, yPos);
             yPos += 10;
 
-            // Check for page break
             if (yPos >= doc.internal.pageSize.height - 20) {
               doc.addPage();
               yPos = 10;
             }
           });
 
-          // Check for page break after each comment
           if (yPos >= doc.internal.pageSize.height - 20) {
             doc.addPage();
             yPos = 10;
@@ -224,7 +238,7 @@ function VentanaScreen() {
       }
 
       yPos += 30;
-      // Check for page break after each ventana
+
       if (yPos >= doc.internal.pageSize.height - 20) {
         doc.addPage();
         yPos = 10;
@@ -276,100 +290,113 @@ function VentanaScreen() {
             <div className={styles.spinner}>
               <Spinner />
             </div>
-          ) : (
-            ventanaDetallada.map((ventana) => (
-              <div className={styles.minutaSeccion} key={ventana._id}>
-                <h2>Informe de minutas</h2>
-                <h3 className={styles.tituloIncidencia}>
-                  Descripción de la Ventana :{' '}
-                  {ventana.ventana.descripcion || 'Descripción no encontrada'}
-                </h3>
-                <div className={styles.detallesIncidencia}>
-                  <p>
-                    <strong> Solicitante :</strong>
-                    {ventana.ventana.solicitante || 'sin datos cargados'}
-                  </p>
-                  <p>
-                    <strong> Estado :</strong>
-                    {ventana.ventana.estado || 'sin datos cargados'}
-                  </p>
-                  <p>
-                    <strong> Fecha de Implementación :</strong>
-                    {ventana.ventana.fechaImplementacion ||
-                      'sin datos cargados'}
-                  </p>
-                  <p>
-                    <strong> CRQ :</strong>
-                    {ventana.ventana.crq || 'sin datos cargados'}
-                  </p>
-                  <p>
-                    <strong> Ejecuta la Tarea :</strong>
-                    {ventana.ventana.ejecutaTarea || 'sin datos cargados'}
-                  </p>
-                  <p>
-                    <strong> Controla :</strong>
-                    {ventana.ventana.controla || 'sin datos cargados'}
-                  </p>
-                  <p>
-                    <strong>Pruebas Post :</strong>
-                    {ventana.ventana.pruebasPost || 'sin datos cargados'}
-                  </p>
-                  <p>
-                    <strong> Impacto / Notificación :</strong>
-                    {ventana.ventana.impactoNotificacion ||
-                      'sin datos cargados'}
-                  </p>
-                  <p>
-                    <strong>Afecta IDP :</strong>
-                    {ventana.ventana.afectaIdp || 'sin datos cargados'}
-                  </p>
-                </div>
+          ) : ventanaDetallada.length > 0 ? (
+            ventanaDetallada.map((ventana) => {
+              const cambiosUnicos = new Set();
 
-                <div className={styles.cambiosIncidencia}>
-                  <h3>Cambios Realizados:</h3>
-                  <ul>
-                    {cambiosCommentVentana
-                      .filter(
-                        (comment) => comment.ventana === ventana.ventana._id
-                      )
-                      .map((comment) => (
-                        <li key={comment._id} className={styles.cambioItem}>
-                          <p>
-                            <strong>Fecha del Cambio:</strong>{' '}
-                            {new Date(comment.fecha).toLocaleDateString()}
-                          </p>
-                          <p>
-                            <strong>Usuario:</strong> {comment.usuarioId}
-                          </p>
-                          {comment.cambios.map((cambio, index) => (
-                            <div key={index}>
-                              <p>
-                                <strong>Campo Modificado:</strong>{' '}
-                                {cambio.campo}
-                              </p>
-                              <p>
-                                {' '}
-                                <strong>Valor Nuevo:</strong>{' '}
-                                {cambio.valorNuevo}
-                              </p>
-                            </div>
-                          ))}
-                        </li>
-                      ))}
-                  </ul>
+              return (
+                <div className={styles.minutaSeccion} key={ventana._id}>
+                  <h2>Informe de minutas</h2>
+                  <h3 className={styles.tituloIncidencia}>
+                    Descripción de la Ventana:{' '}
+                    {ventana.ventana.descripcion || 'Descripción no encontrada'}
+                  </h3>
+
+                  <div className={styles.detallesIncidencia}>
+                    <p>
+                      <strong>Solicitante:</strong>{' '}
+                      {ventana.ventana.solicitante || 'sin datos cargados'}
+                    </p>
+                    <p>
+                      <strong>Estado:</strong>{' '}
+                      {ventana.ventana.estado || 'sin datos cargados'}
+                    </p>
+                    <p>
+                      <strong>Fecha de Implementación:</strong>{' '}
+                      {ventana.ventana.fechaImplementacion ||
+                        'sin datos cargados'}
+                    </p>
+                    <p>
+                      <strong>CRQ:</strong>{' '}
+                      {ventana.ventana.crq || 'sin datos cargados'}
+                    </p>
+                    <p>
+                      <strong>Ejecuta la Tarea:</strong>{' '}
+                      {ventana.ventana.ejecutaTarea || 'sin datos cargados'}
+                    </p>
+                    <p>
+                      <strong>Controla:</strong>{' '}
+                      {ventana.ventana.controla || 'sin datos cargados'}
+                    </p>
+                    <p>
+                      <strong>Pruebas Post:</strong>{' '}
+                      {ventana.ventana.pruebasPost || 'sin datos cargados'}
+                    </p>
+                    <p>
+                      <strong>Impacto / Notificación:</strong>{' '}
+                      {ventana.ventana.impactoNotificacion ||
+                        'sin datos cargados'}
+                    </p>
+                    <p>
+                      <strong>Afecta IDP:</strong>{' '}
+                      {ventana.ventana.afectaIdp || 'sin datos cargados'}
+                    </p>
+                  </div>
+
+                  <div className={styles.cambiosIncidencia}>
+                    <h3>Cambios Realizados:</h3>
+                    <ul>
+                      {cambiosCommentVentana
+                        .filter(
+                          (comment) => comment.ventana === ventana.ventana._id
+                        )
+                        .filter((comment) => {
+                          if (cambiosUnicos.has(comment._id)) {
+                            return false;
+                          }
+                          cambiosUnicos.add(comment._id);
+                          return true;
+                        })
+                        .map((comment) => (
+                          <li key={comment._id} className={styles.cambioItem}>
+                            <p>
+                              <strong>Fecha del Cambio:</strong>{' '}
+                              {new Date(comment.fecha).toLocaleDateString()}
+                            </p>
+                            <p>
+                              <strong>Usuario:</strong>{' '}
+                              {comment.usuarioId || 'Usuario no identificado'}
+                            </p>
+                            {comment.cambios.map((cambio, index) => (
+                              <div key={index}>
+                                <p>
+                                  <strong>Campo Modificado:</strong>{' '}
+                                  {cambio.campo}
+                                </p>
+                                <p>
+                                  <strong>Valor Nuevo:</strong>{' '}
+                                  {cambio.valorNuevo}
+                                </p>
+                              </div>
+                            ))}
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
-          {warning && busquedaRealizada && (
-            <Stack sx={{ width: '100%', marginTop: '20px' }} spacing={2}>
-              <Alert severity='warning'>
-                <AlertTitle className='titulo-error1'>Warning</AlertTitle>
-                <b className='titulo-error'>
-                  No hay informes disponibles para las fechas seleccionadas
-                </b>
-              </Alert>
-            </Stack>
+              );
+            })
+          ) : (
+            busquedaRealizada && (
+              <Stack sx={{ width: '100%', marginTop: '20px' }} spacing={2}>
+                <Alert severity='info'>
+                  <AlertTitle className='titulo-error1'>Info</AlertTitle>
+                  <b className='titulo-error'>
+                    No hay informes disponibles para las fechas seleccionadas
+                  </b>
+                </Alert>
+              </Stack>
+            )
           )}
         </div>
       </div>
@@ -378,16 +405,3 @@ function VentanaScreen() {
 }
 
 export default VentanaScreen;
-function InformesVentanaContext(): {
-  obtenerCambiosCommentsVentanaPorFecha: any;
-  obtenerDetalleCommentVentana: any;
-  cambiosCommentVentana: any;
-  idsComentariosVentanas: any;
-  ventanaDetallada: any;
-  detallesCargados: any;
-  warning: any;
-  setDetallesCargados: any;
-  setIncidenciaDetallada: any;
-} {
-  throw new Error('Function not implemented.');
-}
