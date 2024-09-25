@@ -121,7 +121,10 @@ function ListadoVentana() {
     (semana: Semana) => semana._id === semanaSeleccionada
   );
 
-  const openModal = (): void => setModal(!modal);
+  const openModal = (): void => {
+    console.log('Ventana seleccionada al abrir el modal:', ventanaseleccionada); // Agregado para verificar la ventana seleccionada
+    setModal(!modal); // Alterna el estado del modal
+  };
 
   const formatFecha = (fecha: string): string => {
     const date = new Date(fecha);
@@ -377,16 +380,14 @@ function ListadoVentana() {
                 typelabel='backlog'
               />
               <div className={styles.modal}>
-                {commentVentanas && (
-                  <UpdateModal
-                    show={show}
-                    handleClose={handleShow}
-                    handleSubmit={handleSubmitUpdate}
-                    handleDeleteUpdate={handleDeleteUpdate}
-                    data={commentVentanas}
-                    title={ventanaseleccionada?.descripcion || ''}
-                  />
-                )}
+                <UpdateModal
+                  show={show}
+                  handleClose={handleShow}
+                  handleSubmit={handleSubmitUpdate}
+                  handleDeleteUpdate={handleDeleteUpdate}
+                  data={commentVentanas || []}
+                  title={ventanaseleccionada?.descripcion || ''}
+                />
               </div>
             </>
           )}

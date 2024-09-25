@@ -63,10 +63,14 @@ function IncidenciaScreen() {
   }, [idsComentariosIncidencias]);
 
   useEffect(() => {
-    if (cambiosCommentIncidencia.length >= 0 && detallesCargados) {
-      setLoading(false);
+    if (loading) {
+      const timeoutId = setTimeout(() => {
+        setLoading(false);
+      }, 5000); // 5 segundos
+
+      return () => clearTimeout(timeoutId);
     }
-  }, [cambiosCommentIncidencia, detallesCargados]);
+  }, [loading]);
 
   const generarPDF = () => {
     const doc = new jsPDF();
@@ -311,7 +315,9 @@ function IncidenciaScreen() {
                 </b>
               </Alert>
             </Stack>
-          ) : null}
+          ) : (
+            ''
+          )}
         </div>
       </div>
     </div>

@@ -56,7 +56,7 @@ interface VentanaProps {
 }
 
 function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
-  const { eliminarVentana, guardarVentanaActual, cargarVentanaParaEdicion } =
+  const { eliminarVentana, ventanaActual, guardarVentanaActual } =
     useVentanaContext();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
@@ -70,9 +70,9 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
     eliminarVentana(ventana._id);
   };
 
-  const seleccionarVentana = () => {
+  const seleccionarVentana = (ventana: Ventana) => {
     guardarVentanaActual(ventana);
-    cargarVentanaParaEdicion(ventana);
+    ventanaActual(ventana._id);
   };
 
   return (
@@ -127,7 +127,7 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
                     type='button'
                     className={styles.buttonComment}
                     onClick={() => {
-                      seleccionarVentana();
+                      seleccionarVentana(ventana);
                       handleShow();
                     }}
                   >
@@ -140,7 +140,7 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
                     type='button'
                     className={styles.buttonModal}
                     onClick={() => {
-                      seleccionarVentana();
+                      seleccionarVentana(ventana);
                       openModal();
                     }}
                   >
