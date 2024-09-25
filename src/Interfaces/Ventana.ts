@@ -9,8 +9,6 @@ export interface Ventana {
   controla?: string;
   pruebasPost?: string;
   impactoNotificacion?: string;
-  afectaIdp?: string;
   enBacklog?: boolean;
-  afertaIdP?: string;
   semana: string;
 }

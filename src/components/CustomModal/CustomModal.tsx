@@ -21,8 +21,6 @@ import { Semana } from 'Interfaces/Semana';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './styles.module.scss';
 
-// Define types for props and state
-
 interface CustomModalProps {
   show: boolean;
   handleCloseModal: () => void;
@@ -69,18 +67,27 @@ function CustomModal({
   const [formData, setFormData] = useState<any>(initialFormData);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [modalPosition, setModalPosition] = useState<{ x: number; y: number }>({
-    x: window.innerWidth / 2 - 150,
-    y: window.innerHeight / 2 - 150,
+    x: 0, // Posición inicial en la esquina superior izquierda
+    y: 0, // Posición inicial en la esquina superior izquierda
   });
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
     null
   );
+  const [hasMoved, setHasMoved] = useState(false);
 
   useEffect(() => {
     if (show && ventanaActual) {
       setFormData(ventanaActual);
     }
-  }, [show, ventanaActual]);
+
+    // Si el modal no ha sido movido, mantenlo en la esquina superior izquierda
+    if (show && !hasMoved) {
+      setModalPosition({
+        x: 0,
+        y: 0,
+      });
+    }
+  }, [show, ventanaActual, hasMoved]);
 
   useEffect(() => {
     if (ventanaActual && semanasOptions) {
@@ -154,6 +161,7 @@ function CustomModal({
     const clampedY = Math.max(0, Math.min(newY, window.innerHeight - 300));
 
     setModalPosition({ x: clampedX, y: clampedY });
+    setHasMoved(true); // Marca que el modal ha sido movido
   };
 
   const handleMouseUp = () => {
@@ -175,6 +183,7 @@ function CustomModal({
 
   const handleClose = () => {
     setFormData({});
+    setHasMoved(false); // Reinicia cuando se cierra
     handleCloseModal();
   };
 
@@ -259,80 +268,25 @@ function CustomModal({
               </Form.Group>
             )}
           </Form.Group>
-          <Row>
-            <Col>
-              {fields.slice(0, 4).map((item, index) => (
-                <Form.Group
-                  key={item.name}
-                  className={`mb-3 ${
-                    item.name === 'update' ? 'modal-font' : ''
-                  }`}
-                  controlId={`ControlTextarea${index}`}
-                >
-                  <Form.Label>{item.label}</Form.Label>
-                  <Form.Control
-                    placeholder={item.label}
-                    as={item.type}
-                    rows={3}
-                    name={item.name}
-                    value={formData[item.name] || ''}
-                    onChange={(e) => handleChange(e, item.name)}
-                    required={item.required}
-                    style={{
-                      fontFamily: 'var(--textFont)',
-                      fontSize: item.name === 'update' ? '15px' : 'inherit',
-                    }}
-                  />
-                </Form.Group>
-              ))}
-            </Col>
-            <Col>
-              {fields.slice(4, 8).map((item, index) => (
-                <Form.Group
-                  key={item.name}
-                  className={`mb-3 ${
-                    item.name === 'update' ? 'modal-font' : ''
-                  }`}
-                  controlId={`ControlTextarea${index + 4}`}
-                >
-                  <Form.Label>{item.label}</Form.Label>
-                  <Form.Control
-                    placeholder={item.label}
-                    as={item.type}
-                    rows={3}
-                    name={item.name}
-                    value={formData[item.name] || ''}
-                    onChange={(e) => handleChange(e, item.name)}
-                    required={item.required}
-                    style={{
-                      fontFamily: 'var(--textFont)',
-                      fontSize: item.name === 'update' ? '15px' : 'inherit',
-                    }}
-                  />
-                </Form.Group>
-              ))}
-            </Col>
-          </Row>
+
+          {fields &&
+            fields.map((field) => (
+              <Form.Group key={field.name}>
+                <Form.Label>{field.label}</Form.Label>
+                <Form.Control
+                  type={field.type || 'text'}
+                  name={field.name}
+                  value={formData[field.name] || ''}
+                  onChange={(e) => handleChange(e, field.name)}
+                />
+              </Form.Group>
+            ))}
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant='secondary'
-            onClick={handleClose}
-            style={{
-              fontFamily: 'var(--textFont)',
-              fontSize: '14px',
-            }}
-          >
-            Cerrar
+          <Button variant='secondary' onClick={handleClose}>
+            Cancelar
           </Button>
-          <Button
-            variant='primary'
-            type='submit'
-            style={{
-              fontFamily: 'var(--textFont)',
-              fontSize: '14px',
-            }}
-          >
+          <Button variant='primary' type='submit'>
             Guardar Cambios
           </Button>
         </Modal.Footer>
