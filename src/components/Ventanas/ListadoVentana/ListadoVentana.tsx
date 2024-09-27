@@ -121,9 +121,8 @@ function ListadoVentana() {
     (semana: Semana) => semana._id === semanaSeleccionada
   );
 
-  const openModal = (): void => {
-    console.log('Ventana seleccionada al abrir el modal:', ventanaseleccionada); // Agregado para verificar la ventana seleccionada
-    setModal(!modal); // Alterna el estado del modal
+  const openModal = (semanaId?: string): void => {
+    setModal(!modal);
   };
 
   const formatFecha = (fecha: string): string => {
@@ -211,6 +210,11 @@ function ListadoVentana() {
     }
   };
 
+  const handleSemanaChange = (event: SelectChangeEvent<string>) => {
+    const semanaId = event.target.value;
+    setSelectedSemana(semanaId);
+  };
+
   const handleDeleteUpdate = async (commentId: string) => {
     try {
       setLoading(true);
@@ -249,11 +253,6 @@ function ListadoVentana() {
     if (ventanaseleccionada) {
       limpiarComments();
       obtenerComments(ventanaseleccionada._id);
-    }
-  }, [ventanaseleccionada]);
-  useEffect(() => {
-    if (ventanaseleccionada) {
-      console.log('Ventana seleccionada:', ventanaseleccionada);
     }
   }, [ventanaseleccionada]);
 
@@ -358,7 +357,7 @@ function ListadoVentana() {
                     <div>
                       <VentanaIndividual
                         ventana={ventana}
-                        openModal={openModal}
+                        openModal={() => openModal(ventana.semana)}
                         handleShow={handleShow}
                       />
                     </div>
@@ -378,6 +377,7 @@ function ListadoVentana() {
                 semanasOptions={semanasOptions}
                 showWeek
                 typelabel='backlog'
+                handleSemanaChange={handleSemanaChange}
               />
               <div className={styles.modal}>
                 <UpdateModal

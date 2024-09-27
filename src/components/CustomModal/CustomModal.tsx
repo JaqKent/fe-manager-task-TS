@@ -9,14 +9,14 @@
 /* eslint-disable max-lines */
 import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import Row from 'react-bootstrap/Row';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { Field } from 'Interfaces/Incidencias';
 import { Semana } from 'Interfaces/Semana';
+
+import DropdownSemana from './DropDownSemanas/DropdownSemanas';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './styles.module.scss';
@@ -38,6 +38,7 @@ interface CustomModalProps {
   typelabel: string;
   showWeek?: boolean;
   mes?: boolean;
+  handleSemanaChange: (event: SelectChangeEvent<string>) => void;
 }
 
 function CustomModal({
@@ -57,6 +58,7 @@ function CustomModal({
   showWeek,
   mes,
   onChange,
+  handleSemanaChange,
 }: CustomModalProps) {
   const initialFormData = {
     ...ventanaActual,
@@ -67,8 +69,8 @@ function CustomModal({
   const [formData, setFormData] = useState<any>(initialFormData);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [modalPosition, setModalPosition] = useState<{ x: number; y: number }>({
-    x: 0, // Posición inicial en la esquina superior izquierda
-    y: 0, // Posición inicial en la esquina superior izquierda
+    x: 0,
+    y: 0,
   });
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
     null
@@ -80,7 +82,6 @@ function CustomModal({
       setFormData(ventanaActual);
     }
 
-    // Si el modal no ha sido movido, mantenlo en la esquina superior izquierda
     if (show && !hasMoved) {
       setModalPosition({
         x: 0,
@@ -93,11 +94,15 @@ function CustomModal({
     if (ventanaActual && semanasOptions) {
       const semanaActual = semanasOptions.find(
         (semana) =>
-          formatDate(semana.startDate) === formatDate(ventanaActual.startDate)
+          new Date(semana.startDate).toLocaleDateString() ===
+          new Date(ventanaActual.startDate).toLocaleDateString()
       );
       if (semanaActual) {
         setSelectedSemana(semanaActual._id);
-        localStorage.setItem('selectedOption', semanaActual._id);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          selectedSemana: semanaActual._id,
+        }));
       }
     }
   }, [ventanaActual, semanasOptions]);
@@ -161,7 +166,7 @@ function CustomModal({
     const clampedY = Math.max(0, Math.min(newY, window.innerHeight - 300));
 
     setModalPosition({ x: clampedX, y: clampedY });
-    setHasMoved(true); // Marca que el modal ha sido movido
+    setHasMoved(true);
   };
 
   const handleMouseUp = () => {
@@ -183,7 +188,7 @@ function CustomModal({
 
   const handleClose = () => {
     setFormData({});
-    setHasMoved(false); // Reinicia cuando se cierra
+    setHasMoved(false);
     handleCloseModal();
   };
 
@@ -223,28 +228,11 @@ function CustomModal({
               onChange={(e) => handleChange(e, 'enBacklog')}
             />
             {showWeek && (
-              <>
-                <Form.Label>Semana Destino</Form.Label>
-                <Select
-                  label='Semana Destino: '
-                  value={selectedSemana}
-                  onChange={(e) => setSelectedSemana(e.target.value)}
-                  style={{ width: '180px', fontSize: '16px' }}
-                >
-                  {semanasOptions &&
-                    semanasOptions.map((semana) => (
-                      <MenuItem
-                        key={semana._id}
-                        value={semana._id}
-                        style={{ fontSize: '16px' }}
-                      >
-                        {`${formatDate(semana.startDate)} - ${formatDate(
-                          semana.endDate
-                        )}`}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </>
+              <DropdownSemana
+                semanasOptions={semanasOptions}
+                selectedSemana={formData.selectedSemana}
+                handleSemanaChange={handleSemanaChange}
+              />
             )}
             {mes && (
               <Form.Group controlId='selectMeses'>
