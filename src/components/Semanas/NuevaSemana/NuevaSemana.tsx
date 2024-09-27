@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import { useEffect, useState } from 'react';
 import moment from 'moment-timezone';
 
@@ -59,7 +60,7 @@ function NuevaSemanaAutomatica() {
 
     if (weeks.length > 0) {
       for (const semana of weeks) {
-        console.log('Guardando semana:', semana); // Log para cada semana que se guarda
+        console.log('Guardando semana:', semana);
         await agregarSemana(semana);
       }
 
@@ -81,7 +82,7 @@ function NuevaSemanaAutomatica() {
       const response = await clienteAxios.get('/weeks');
 
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         'Error fetching semanas:',
         error.response ? error.response.data : error.message
@@ -97,14 +98,10 @@ function NuevaSemanaAutomatica() {
       (semana: any) => parseInt(semana.year, 10) === currentYear
     );
 
-    console.log('¿Existen semanas para el año actual?', yearHasWeeks);
     if (!yearHasWeeks) {
       await createWeeksForYear(currentYear);
       setSemanasYaExisten(false);
     } else {
-      setMensajeConfirmacion(
-        'Las semanas ya están creadas para el año actual.'
-      );
       setSemanasYaExisten(true);
     }
   };

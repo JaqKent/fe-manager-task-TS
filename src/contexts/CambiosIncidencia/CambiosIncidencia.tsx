@@ -37,6 +37,7 @@ interface InformesIncidenciaContextProps {
   setDetallesCargados: (cargado: boolean) => void;
   warning: boolean;
   setIncidenciaDetallada: (cargado: boolean) => void;
+  limpiarCambiosCommentIncidencia: () => void;
 }
 
 const InformesIncidenciaContext = createContext<
@@ -214,6 +215,10 @@ export default function InformesIncidenciaProvider({
     setWarning(false);
   }, [incidenciaDetallada, detallesCargados]);
 
+  const limpiarCambiosCommentIncidencia = () => {
+    setCambiosCommentIncidencia([]);
+  };
+
   const contextValue: InformesIncidenciaContextProps = {
     cambiosIncidencia,
     incidenciaDetallada,
@@ -228,6 +233,7 @@ export default function InformesIncidenciaProvider({
     setDetallesCargados,
     warning,
     setIncidenciaDetallada,
+    limpiarCambiosCommentIncidencia,
   };
 
   return (

@@ -320,6 +320,7 @@ function ListadoInfoIncidencia() {
 
           <CustomModal
             show={modal}
+            title='Incidencia'
             handleCloseModal={openModal}
             handleSubmit={handleSubmit}
             ventanaActual={incidenciaSeleccionada}

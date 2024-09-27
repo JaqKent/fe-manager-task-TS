@@ -222,7 +222,10 @@ export const getVentanaCells = (ventana: Ventana) => [
   {
     id: 'impactoNotificacion/afectaIdp',
     label: 'impactoNotificacion/afectaIdp',
-    content: `${ventana.impactoNotificacion}/${ventana.afectaIdp}`,
+    content:
+      ventana.impactoNotificacion && ventana.afectaIdp
+        ? `${ventana.impactoNotificacion}/${ventana.afectaIdp}`
+        : '',
     width: '9.444%',
   },
 ];

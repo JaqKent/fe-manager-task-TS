@@ -121,7 +121,9 @@ function ListadoVentana() {
     (semana: Semana) => semana._id === semanaSeleccionada
   );
 
-  const openModal = (): void => setModal(!modal);
+  const openModal = (semanaId?: string): void => {
+    setModal(!modal);
+  };
 
   const formatFecha = (fecha: string): string => {
     const date = new Date(fecha);
@@ -208,6 +210,11 @@ function ListadoVentana() {
     }
   };
 
+  const handleSemanaChange = (event: SelectChangeEvent<string>) => {
+    const semanaId = event.target.value;
+    setSelectedSemana(semanaId);
+  };
+
   const handleDeleteUpdate = async (commentId: string) => {
     try {
       setLoading(true);
@@ -246,11 +253,6 @@ function ListadoVentana() {
     if (ventanaseleccionada) {
       limpiarComments();
       obtenerComments(ventanaseleccionada._id);
-    }
-  }, [ventanaseleccionada]);
-  useEffect(() => {
-    if (ventanaseleccionada) {
-      console.log('Ventana seleccionada:', ventanaseleccionada);
     }
   }, [ventanaseleccionada]);
 
@@ -355,7 +357,7 @@ function ListadoVentana() {
                     <div>
                       <VentanaIndividual
                         ventana={ventana}
-                        openModal={openModal}
+                        openModal={() => openModal(ventana.semana)}
                         handleShow={handleShow}
                       />
                     </div>
@@ -375,18 +377,17 @@ function ListadoVentana() {
                 semanasOptions={semanasOptions}
                 showWeek
                 typelabel='backlog'
+                handleSemanaChange={handleSemanaChange}
               />
               <div className={styles.modal}>
-                {commentVentanas && (
-                  <UpdateModal
-                    show={show}
-                    handleClose={handleShow}
-                    handleSubmit={handleSubmitUpdate}
-                    handleDeleteUpdate={handleDeleteUpdate}
-                    data={commentVentanas}
-                    title={ventanaseleccionada?.descripcion || ''}
-                  />
-                )}
+                <UpdateModal
+                  show={show}
+                  handleClose={handleShow}
+                  handleSubmit={handleSubmitUpdate}
+                  handleDeleteUpdate={handleDeleteUpdate}
+                  data={commentVentanas || []}
+                  title={ventanaseleccionada?.descripcion || ''}
+                />
               </div>
             </>
           )}

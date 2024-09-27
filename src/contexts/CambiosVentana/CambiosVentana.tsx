@@ -36,6 +36,7 @@ interface InformesVentanaContextProps {
   setDetallesCargados: (cargado: boolean) => void;
   warning: boolean;
   setVentanaDetallada: (cargado: boolean) => void;
+  limpiarCambiosCommentVentana: () => void;
 }
 
 const InformesVentanaContext = createContext<
@@ -110,7 +111,6 @@ export default function InformesVentanaProvider({
     fechaFin: Date
   ) => {
     try {
-      // Verificar si las fechas son instancias de Date válidas
       const startDate =
         fechaInicio instanceof Date ? fechaInicio : new Date(fechaInicio);
       const endDate = fechaFin instanceof Date ? fechaFin : new Date(fechaFin);
@@ -119,17 +119,14 @@ export default function InformesVentanaProvider({
         throw new Error('Las fechas deben ser instancias de Date válidas');
       }
 
-      // Formatear las fechas para la consulta
       const formattedStartDate = formatDate(startDate);
       const formattedEndDate = formatDate(endDate);
 
-      // Llamar al endpoint
       const response = await clienteAxios.get(
         `/cambios/commentsventana/fecha/${formattedStartDate}/${formattedEndDate}`
       );
       const { idsCambiosCommetsVentanas } = response.data;
 
-      // Actualizar estado con los IDs obtenidos
       setIdsComentariosVentanas(idsCambiosCommetsVentanas);
     } catch (error) {
       console.error(
@@ -216,6 +213,10 @@ export default function InformesVentanaProvider({
     }
   }, [cambiosCommentVentana]);
 
+  const limpiarCambiosCommentVentana = () => {
+    setCambiosCommentVentana([]);
+  };
+
   const contextValue: InformesVentanaContextProps = {
     cambiosVentana,
     ventanaDetallada,
@@ -230,6 +231,7 @@ export default function InformesVentanaProvider({
     setDetallesCargados,
     warning,
     setVentanaDetallada,
+    limpiarCambiosCommentVentana,
   };
 
   return (
