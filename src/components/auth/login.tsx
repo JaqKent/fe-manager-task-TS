@@ -1,6 +1,7 @@
 /* eslint-disable import/extensions */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useContext, useEffect, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
 import AlertaContext from '~contexts/alert/AlertContext';
@@ -32,7 +33,7 @@ function Login() {
     verificarUsuarioAutenticado();
 
     if (isAuthenticated) {
-      navigate('/incidencias');
+      navigate('/weeks');
     }
 
     if (mensaje) {
@@ -127,7 +128,7 @@ function Login() {
                 disabled
                 className='btn btn-outline-primary btn-lg'
               >
-                Iniciando sesión por favor aguarde un momento
+                Iniciando sesión por favor aguarde un momento <Spinner />
               </button>
             ) : (
               <button type='submit' className='btn btn-outline-primary btn-lg'>

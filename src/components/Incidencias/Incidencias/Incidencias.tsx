@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import SearchBar from '~components/Layout/Searchbar/SearchBar';
 import { useAuthContext } from '~contexts/auth/AuthContext';
 import { useIncidenciaContext } from '~contexts/incidencias/Incidencias';
 
@@ -27,7 +28,12 @@ function Incidencias() {
       <div className={styles.seccionPrincipal}>
         <main>
           <div className={styles.contenedorTareas}>
-            <InfoIncidencia />
+            <div className={styles.searchBarContainer}>
+              <SearchBar ClassName={styles.searchBar} onlyIncidencias />
+            </div>
+            <div>
+              <InfoIncidencia />
+            </div>
           </div>
         </main>
       </div>

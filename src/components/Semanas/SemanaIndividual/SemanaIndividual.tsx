@@ -70,32 +70,13 @@ function SemanaIndividual({
     return `${day}/${month}`;
   };
 
-  const isButtonDisabled = () => {
-    const today = new Date();
-    const startOfWeek = new Date(semana.startDate);
-    const endOfCurrentWeek = new Date();
-
-    // Definimos el fin de la semana actual (viernes)
-    endOfCurrentWeek.setDate(today.getDate() + (5 - today.getDay())); // 5 para viernes
-
-    // Obtenemos el inicio de la siguiente semana laboral (lunes después de la semana actual)
-    const startOfNextWeek = new Date(endOfCurrentWeek);
-    startOfNextWeek.setDate(endOfCurrentWeek.getDate() + 3); // 3 para saltar a lunes siguiente
-
-    // Deshabilitar si la semana comienza después de la próxima semana
-    return startOfWeek > startOfNextWeek;
-  };
-
   return (
     <li>
       <div className={styles.list}>
         <button
           type='button'
-          className={`${styles.butnSemana} ${
-            activeButtonId === semana._id ? styles.active : ''
-          } ${isButtonDisabled() ? styles.disabledButton : ''}`}
+          className={styles.butnSemana}
           onClick={() => seleccionarSemana(semana._id)}
-          disabled={isButtonDisabled()}
         >
           {`${formatDate(semana.startDate)} - ${formatDate(semana.endDate)}`}
         </button>{' '}

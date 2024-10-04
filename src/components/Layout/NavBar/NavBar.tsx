@@ -76,7 +76,7 @@ function CustomNavbar() {
             Ventanas Proximas
           </Nav.Link>
         </Nav>
-        <SearchBar />
+
         <Reminder
           mostrarRecordatorio={mostrarRecordatorio}
           setMostrarRecordatorio={setMostrarRecordatorio}

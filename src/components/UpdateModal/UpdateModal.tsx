@@ -40,8 +40,8 @@ function UpdateModal({
   const [noComments, setNoComments] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [modalPosition, setModalPosition] = useState<{ x: number; y: number }>({
-    x: window.innerWidth / 2 - 150,
-    y: window.innerHeight / 2 - 150,
+    x: 350,
+    y: 100,
   });
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
     null

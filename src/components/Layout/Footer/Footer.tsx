@@ -6,7 +6,7 @@ function Footer() {
     <footer>
       <div className={styles.footer}>
         <div>
-          <h3>JMAI © 2023</h3>
+          <h3>JMAI © 2024</h3>
         </div>
       </div>
     </footer>

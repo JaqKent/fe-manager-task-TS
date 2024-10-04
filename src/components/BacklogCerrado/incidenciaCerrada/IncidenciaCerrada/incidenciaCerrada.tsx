@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import InfoIncidencia from '~components/Incidencias/InfoIncidencia/InfoIncidencia';
+import SearchBar from '~components/Layout/Searchbar/SearchBar';
 import { useAuthContext } from '~contexts/auth/AuthContext';
 import { useIncidenciaContext } from '~contexts/incidencias/Incidencias';
 
@@ -29,7 +30,16 @@ function IncidenciaCerrada() {
       <div className={styles.seccionPrincipal}>
         <main>
           <div className={styles.contenedorTareas}>
-            <InfoIncidencia />
+            <div className={styles.searchBarContainer}>
+              <SearchBar
+                ClassName={styles.searchBar}
+                onlyBacklog
+                onlyIncidencias
+              />
+            </div>{' '}
+            <div>
+              <InfoIncidencia />
+            </div>
           </div>
         </main>
       </div>

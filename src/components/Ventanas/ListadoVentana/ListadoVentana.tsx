@@ -23,6 +23,7 @@ import { Semana } from 'Interfaces/Semana';
 import { Ventana } from 'Interfaces/Ventana';
 
 import CustomModal from '~components/CustomModal/CustomModal';
+import SearchBar from '~components/Layout/Searchbar/SearchBar';
 import UpdateModal from '~components/UpdateModal/UpdateModal';
 import { ADD_ITEM_FORM, VentanaTable } from '~constants/constants';
 import { useAuthContext } from '~contexts/auth/AuthContext';
@@ -256,21 +257,31 @@ function ListadoVentana() {
     }
   }, [ventanaseleccionada]);
 
+  useEffect(() => {
+    if (show && ventanaseleccionada?._id) {
+      const cargarComentarios = async () => {
+        setCommentLoading(true);
+        limpiarComments();
+        try {
+          await obtenerComments(ventanaseleccionada._id);
+          console.log('Comentarios obtenidos con éxito.');
+        } catch (error) {
+          console.error('Error al obtener comentarios:', error);
+        } finally {
+          setCommentLoading(false);
+        }
+      };
+
+      cargarComentarios();
+    }
+  }, [show, ventanaseleccionada]);
+
   if (!semanaActual || ventanasemana === null)
     return <h2 className={styles.textoProyecto}>Selecciona una Semana</h2>;
 
-  const handleShow = async () => {
-    if (!show && ventanaseleccionada?._id) {
+  const handleShow = () => {
+    if (!show) {
       setShow(true);
-      setCommentLoading(true);
-      limpiarComments();
-      try {
-        await obtenerComments(ventanaseleccionada._id);
-      } catch (error) {
-        console.error('Error al obtener comentarios:', error);
-      } finally {
-        setCommentLoading(false);
-      }
     } else {
       setShow(false);
     }
