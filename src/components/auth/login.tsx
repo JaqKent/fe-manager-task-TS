@@ -128,7 +128,7 @@ function Login() {
                 disabled
                 className='btn btn-outline-primary btn-lg'
               >
-                Iniciando sesión por favor aguarde un momento <Spinner />
+                Iniciando sesión por favor aguarde un momento... <Spinner />
               </button>
             ) : (
               <button type='submit' className='btn btn-outline-primary btn-lg'>

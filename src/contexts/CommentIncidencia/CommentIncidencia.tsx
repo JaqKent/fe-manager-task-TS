@@ -71,15 +71,13 @@ export default function CommentIncidenciaProvider({
   };
 
   const eliminarComment = async (commentId: string) => {
-    if (window.confirm('¿Seguro que deseas eliminar el comentario?')) {
-      try {
-        await clienteAxios.delete(`/commentsIncidencia/${commentId}`);
-        setCommentIncidencias(
-          commentIncidencias.filter((comment) => comment._id !== commentId)
-        );
-      } catch (error) {
-        setMensaje('Hubo un error al eliminar el comentario');
-      }
+    try {
+      await clienteAxios.delete(`/commentsIncidencia/${commentId}`);
+      setCommentIncidencias(
+        commentIncidencias.filter((comment) => comment._id !== commentId)
+      );
+    } catch (error) {
+      setMensaje('Hubo un error al eliminar el comentario');
     }
   };
 

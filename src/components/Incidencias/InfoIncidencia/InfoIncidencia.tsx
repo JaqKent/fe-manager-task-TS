@@ -162,9 +162,7 @@ function ListadoInfoIncidencia() {
         usuarioCreador: idUsuarioCreador,
       });
 
-      setLocalLoading(true);
       await obtenerComments(incidenciaSeleccionada._id);
-      setLocalLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -203,13 +201,12 @@ function ListadoInfoIncidencia() {
 
   const handleDeleteUpdate = async (commentId: string) => {
     try {
-      setLocalLoading(true);
       await eliminarComment(commentId);
       await obtenerComments(incidenciaSeleccionada._id);
     } catch (error) {
       console.error(error);
     } finally {
-      setLocalLoading(false);
+      console.log('comentario eliminado');
     }
   };
 

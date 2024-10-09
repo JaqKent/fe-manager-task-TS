@@ -116,18 +116,16 @@ export default function VentanaProvider({ children }: { children: ReactNode }) {
   };
 
   const eliminarVentana = async (ventanaId: string) => {
-    if (window.confirm('¿Seguro que deseas eliminar el ítem?')) {
-      try {
-        setLoading(true);
-        await clienteAxios.delete(`/ventanas/${ventanaId}`);
-        setVentanasemana(
-          ventanasemana.filter((ventana) => ventana._id !== ventanaId)
-        );
-      } catch (error) {
-        console.log('Error al eliminar ventana:', error);
-      } finally {
-        setLoading(false);
-      }
+    try {
+      setLoading(true);
+      await clienteAxios.delete(`/ventanas/${ventanaId}`);
+      setVentanasemana(
+        ventanasemana.filter((ventana) => ventana._id !== ventanaId)
+      );
+    } catch (error) {
+      console.log('Error al eliminar ventana:', error);
+    } finally {
+      setLoading(false);
     }
   };
 

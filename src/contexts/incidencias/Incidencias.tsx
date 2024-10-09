@@ -111,15 +111,13 @@ export default function IncidenciaProvider({
 
   const eliminarIncidencia = async (incidenciaId: string) => {
     try {
-      if (window.confirm('¿Seguro que deseas eliminar el ítem?')) {
-        setLoading(true);
-        await clienteAxios.delete(`/incidencias/${incidenciaId}`);
-        setIncidencias(
-          incidencias.filter((incidencia) => incidencia._id !== incidenciaId)
-        );
-        setIncidenciaSeleccionada(null);
-        setLoading(false);
-      }
+      setLoading(true);
+      await clienteAxios.delete(`/incidencias/${incidenciaId}`);
+      setIncidencias(
+        incidencias.filter((incidencia) => incidencia._id !== incidenciaId)
+      );
+      setIncidenciaSeleccionada(null);
+      setLoading(false);
     } catch (error) {
       console.log('Error al eliminar incidencia:', error);
       setLoading(false);

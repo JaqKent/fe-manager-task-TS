@@ -191,7 +191,7 @@ function SearchBar({
           color: '#000',
         }}
       />
-      {loading && <p>Cargando...</p>}
+
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {isOpen && results.length > 0 && (
         <ul

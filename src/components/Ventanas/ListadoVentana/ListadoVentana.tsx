@@ -8,7 +8,6 @@
 /* eslint-disable max-lines */
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { useLocation } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Paper from '@mui/material/Paper';
@@ -23,7 +22,6 @@ import { Semana } from 'Interfaces/Semana';
 import { Ventana } from 'Interfaces/Ventana';
 
 import CustomModal from '~components/CustomModal/CustomModal';
-import SearchBar from '~components/Layout/Searchbar/SearchBar';
 import UpdateModal from '~components/UpdateModal/UpdateModal';
 import { ADD_ITEM_FORM, VentanaTable } from '~constants/constants';
 import { useAuthContext } from '~contexts/auth/AuthContext';
@@ -51,7 +49,6 @@ function ListadoVentana() {
   const [selectedSemana, setSelectedSemana] = useState<string>('');
   const [mensajeConfirmacion, setMensajeConfirmacion] =
     useState<boolean>(false);
-  const location = useLocation();
 
   const { semanas } = useSemanaContext();
 
@@ -203,9 +200,7 @@ function ListadoVentana() {
         usuarioCreador: idUsuarioCreador,
       });
 
-      setLoading(true);
       await obtenerComments(ventanaseleccionada._id);
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -218,13 +213,12 @@ function ListadoVentana() {
 
   const handleDeleteUpdate = async (commentId: string) => {
     try {
-      setLoading(true);
       await eliminarComment(commentId);
       await obtenerComments(ventanaseleccionada._id);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      console.log('comentario borrado');
     }
   };
 

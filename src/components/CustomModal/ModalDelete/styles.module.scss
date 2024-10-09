@@ -1,0 +1,33 @@
+@import '../../../scss/colors';
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+.modal {
+  position: fixed;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: $gris1;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+  z-index: 1000;
+}
+
+.modal button {
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttonYes {
+  background-color: $red;
+  color: $blanco;
+}
+
+.buttonNo {
+  background-color: $gris2;
+  color: $blanco;
+}

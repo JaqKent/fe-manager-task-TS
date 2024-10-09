@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CommentIncidencia } from 'Interfaces/CommentsIncidencias';
 import { CommentVentana } from 'Interfaces/CommentVentana';
 
+import ModalDelete from '~components/CustomModal/ModalDelete/ModalDelete';
 import { createSpeechRecognitionUtils } from '~utils/VoiceRecognition';
 
 import styles from './styles.module.scss';
@@ -39,6 +40,7 @@ function UpdateModal({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [noComments, setNoComments] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [modalPosition, setModalPosition] = useState<{ x: number; y: number }>({
     x: 350,
     y: 100,
@@ -144,6 +146,11 @@ function UpdateModal({
     }
   };
 
+  const handleConfirmDelete = async (commentId: string) => {
+    await handleDelete(commentId);
+    setOpenDelete(false);
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
     setDragStart({
@@ -193,23 +200,37 @@ function UpdateModal({
             ) : (
               data.length > 0 &&
               data.map((comment) => (
-                <div className={styles.commentSection} key={comment._id}>
+                <div className={styles.commentSection} key={comment?._id}>
                   <div className={styles.userModal}>
                     <div>
-                      <div>{comment.usuarioCreador?.nombre}</div>
+                      <div>{comment?.usuarioCreador?.nombre}</div>
                       <div className={styles.fecha}>
-                        {formatFecha(comment.fechaCreacion)}
+                        {formatFecha(comment?.fechaCreacion)}
                       </div>
                     </div>
-                    <div onClick={() => handleDelete(comment._id)}>
-                      <button type='button' className={styles.cerrarModal}>
+                    <div>
+                      <button
+                        type='button'
+                        onClick={() => {
+                          setOpenDelete(true);
+                        }}
+                        className={styles.cerrarModal}
+                      >
                         x
                       </button>
                     </div>
                   </div>
                   <div className={styles.modalCuadroTexto}>
-                    <div className={styles.commentUpdate}>{comment.update}</div>
+                    <div className={styles.commentUpdate}>
+                      {comment?.update}
+                    </div>
                   </div>
+                  {openDelete && (
+                    <ModalDelete
+                      onClick={() => handleConfirmDelete(comment._id)}
+                      close={() => setOpenDelete(false)}
+                    />
+                  )}
                 </div>
               ))
             )}

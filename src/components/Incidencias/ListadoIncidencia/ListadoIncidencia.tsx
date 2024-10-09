@@ -66,6 +66,11 @@ function ListadoIncidencia({
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    setIncidenciasFiltradas([]);
+    i;
+  }, [mostrarEnBacklog]);
+
   if (incidencias.length === 0) {
     return <p>Crear una Incidencia para comenzar</p>;
   }
@@ -80,6 +85,7 @@ function ListadoIncidencia({
           incidenciasFiltradas.map((incidencia) => (
             <IncidenciaUnica
               key={incidencia._id}
+              i
               incidencia={incidencia}
               activeButtonId={activeButtonId}
               onButtonClick={handleButtonClick}
