@@ -38,7 +38,6 @@ interface AuthContextProps {
   mensaje: Mensaje | null;
 }
 
-// Inicializamos el contexto con valores vacíos
 const AuthContext = createContext<AuthContextProps>({
   user: null,
   isAuthenticated: false,
@@ -130,11 +129,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const register = useCallback(
-    async (name: string, email: string, password: string) => {
+    async (nombre: string, email: string, password: string) => {
       try {
         setIsLoading(true);
         const response = await clienteAxios.post('/usuario', {
-          name,
+          nombre,
           email,
           password,
         });
@@ -145,10 +144,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         setIsAuthenticated(true);
       } catch (error: any) {
         setError('Error al registrar usuario');
-        console.error(
-          'Error al registrar usuario',
-          error.response?.data || error.message
-        );
+        if (error.response) {
+          console.error('Error al registrar usuario:', error.response.data);
+        } else {
+          console.error('Error al registrar usuario:', error.message);
+        }
       } finally {
         setIsLoading(false);
       }

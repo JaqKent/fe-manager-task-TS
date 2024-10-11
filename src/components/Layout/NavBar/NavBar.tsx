@@ -8,11 +8,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '~contexts/auth/AuthContext';
 
 import Reminder from '../Reminder/Reminder';
-import SearchBar from '../Searchbar/SearchBar';
 
 function CustomNavbar() {
-  // Extraer la información de autenticación
-
   const { logout } = useAuthContext();
   const [mostrarRecordatorio, setMostrarRecordatorio] = useState(false);
   const history = useNavigate();
@@ -38,7 +35,11 @@ function CustomNavbar() {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls='basic-navbar-nav ' />
       <Navbar.Collapse id='basic-navbar-nav'>
-        <Nav className='me-auto' style={{ gap: '10px ', fontSize: '15px' }}>
+        <Nav
+          variant='pills'
+          className='me-auto'
+          style={{ gap: '10px ', fontSize: '15px' }}
+        >
           <Nav.Link as={NavLink} to='/weeks'>
             Ventanas de Trabajo
           </Nav.Link>

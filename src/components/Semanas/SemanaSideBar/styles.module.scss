@@ -2,13 +2,11 @@
 @import '../../../scss/mixins';
 @import '../../../scss/variables';
 
-/* IncidenciaSidebar.scss */
-
 .proyectos {
-  padding: 20px;
+  padding: 25px 20px;
   background-color: #f7f7f7;
   border-right: 1px solid #ddd;
-  height: 80vh;
+  height: calc(100vh - 106px);
   width: 300px;
 }
 

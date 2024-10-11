@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable import/extensions */
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -85,40 +86,12 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
                   align='left'
                   style={{ width: cell.width, padding: '7px' }}
                 >
-                  {cell.id === 'descripcion' ? (
-                    <>
-                      <div
-                        className={`${styles.description} ${
-                          isExpanded ? styles.expanded : styles.collapsed
-                        }`}
-                      >
-                        {cell.content}
-                      </div>
-                      <span
-                        className={styles.toggleButton}
-                        onClick={handleExpandClick}
-                      >
-                        {isExpanded ? (
-                          <>
-                            <span>Ver Menos</span>
-                            <FontAwesomeIcon icon={faChevronUp} />
-                          </>
-                        ) : (
-                          <>
-                            <span>Ver Más</span>
-                            <FontAwesomeIcon icon={faChevronDown} />
-                          </>
-                        )}
-                      </span>
-                    </>
-                  ) : (
-                    cell.content
-                  )}
+                  {cell.content}
                 </StyledTableCell>
               ))}
               <StyledTableCell
                 align='left'
-                style={{ width: '9.444%', padding: '2px' }}
+                style={{ width: '9.888%', padding: '1px 0' }}
               >
                 <div className={styles.actions}>
                   <button
@@ -150,7 +123,7 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
                   <button
                     type='button'
                     className={styles.buttonBorrar}
-                    onClick={() => handleEliminarVentana(ventana)} // Cambiado aquí
+                    onClick={() => handleEliminarVentana(ventana)}
                   >
                     X
                   </button>

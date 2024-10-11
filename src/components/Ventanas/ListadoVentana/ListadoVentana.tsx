@@ -8,6 +8,7 @@
 /* eslint-disable max-lines */
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Paper from '@mui/material/Paper';
@@ -49,8 +50,10 @@ function ListadoVentana() {
   const [selectedSemana, setSelectedSemana] = useState<string>('');
   const [mensajeConfirmacion, setMensajeConfirmacion] =
     useState<boolean>(false);
+  const [shouldFetchVentanas, setShouldFetchVentanas] = useState(false);
 
   const { semanas } = useSemanaContext();
+  const location = useLocation();
 
   const { user } = useAuthContext();
 
@@ -230,7 +233,7 @@ function ListadoVentana() {
   }));
 
   useEffect(() => {
-    if (semanaActual && semanaActual._id) {
+    if (shouldFetchVentanas && semanaActual && semanaActual._id) {
       setLoading(true);
       obtenerVentanasPorSemana(semanaActual._id)
         .then(() => setLoading(false))
@@ -238,11 +241,20 @@ function ListadoVentana() {
           setLoading(false);
           console.error('Error:', error);
         });
+      setShouldFetchVentanas(false);
     }
+  }, [shouldFetchVentanas, semanaActual]);
+
+  useEffect(() => {
+    limpiarVentanaSemana();
+    setShouldFetchVentanas(true);
+  }, [location.pathname]);
+
+  useEffect(() => {
     if (semanas) {
       setSemanasOptions(semanas);
     }
-  }, [semanaActual, semanas]);
+  }, [semanas]);
 
   useEffect(() => {
     if (ventanaseleccionada) {
@@ -258,7 +270,6 @@ function ListadoVentana() {
         limpiarComments();
         try {
           await obtenerComments(ventanaseleccionada._id);
-          console.log('Comentarios obtenidos con éxito.');
         } catch (error) {
           console.error('Error al obtener comentarios:', error);
         } finally {
@@ -349,7 +360,7 @@ function ListadoVentana() {
                               key={column.id}
                               align='left'
                               className={styles.tituloTable}
-                              style={{ width: column.width, padding: '8px' }}
+                              style={{ width: column.width, padding: '7px' }}
                             >
                               {column.label}
                             </StyledTableCell>

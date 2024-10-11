@@ -205,8 +205,8 @@ function SearchBar({
             padding: 0,
             border: '1px solid #ddd',
             zIndex: 10,
-            maxHeight: '200px', // Limitar la altura de la lista
-            overflowY: 'auto', // Añadir desplazamiento si hay muchos resultados
+            maxHeight: '200px',
+            overflowY: 'auto',
           }}
         >
           {results.map((result) => (

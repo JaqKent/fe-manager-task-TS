@@ -44,7 +44,7 @@ function IncidenciaUnica({ incidencia, activeButtonId, onButtonClick }: Props) {
   const handleEliminarIncidencia = () => {
     if (incidenciaAEliminar) {
       eliminarIncidencia(incidenciaAEliminar._id);
-      setDeleteModalOpen(false); // Cerrar el modal después de eliminar
+      setDeleteModalOpen(false);
     }
   };
 

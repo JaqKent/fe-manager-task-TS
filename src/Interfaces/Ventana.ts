@@ -11,4 +11,5 @@ export interface Ventana {
   impactoNotificacion?: string;
   enBacklog?: boolean;
   semana: string;
+  afectaIdp: string;
 }
