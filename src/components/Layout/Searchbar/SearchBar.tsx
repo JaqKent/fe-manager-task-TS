@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect, useRef, useState } from 'react';
 
 import { useIncidenciaContext } from '~contexts/incidencias/Incidencias';
@@ -14,7 +12,19 @@ interface SearchResult {
   type: 'Incidencia' | 'Ventana';
 }
 
-function SearchBar() {
+interface Props {
+  ClassName?: string;
+  onlyIncidencias?: boolean;
+  onlyVentanas?: boolean;
+  onlyBacklog?: boolean;
+}
+
+function SearchBar({
+  ClassName,
+  onlyIncidencias,
+  onlyVentanas,
+  onlyBacklog,
+}: Props) {
   const { incidencias, obtenerIncidencias, incidenciaActual } =
     useIncidenciaContext();
   const {
@@ -66,54 +76,67 @@ function SearchBar() {
       const semanaMap = new Map(semanas.map((semana) => [semana._id, semana]));
 
       // Filtrado de incidencias
-      const filteredIncidencias = incidencias
-        .filter(
-          (incidencia) =>
-            incidencia.descripcion &&
-            incidencia.descripcion
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
-        )
-        .map((incidencia) => ({
-          id: incidencia._id,
-          description: incidencia.descripcion || '',
-          year: incidencia.year,
-          month: incidencia.month,
-          type: 'Incidencia' as const,
-        }));
+      const filteredIncidencias =
+        !onlyVentanas &&
+        incidencias
+          .filter(
+            (incidencia) =>
+              (!onlyBacklog || incidencia.enBacklog) &&
+              incidencia.descripcion &&
+              incidencia.descripcion
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+          )
+          .map((incidencia) => ({
+            id: incidencia._id,
+            description: incidencia.descripcion || '',
+            year: incidencia.year,
+            month: incidencia.month,
+            type: 'Incidencia' as const,
+          }));
 
       // Filtrado de ventanas
-      const filteredVentanas = todasLasVentanas
-        .filter(
-          (ventana) =>
-            ventana.descripcion &&
-            ventana.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        .map((ventana) => {
-          const semana = semanaMap.get(ventana.semana);
-          return {
-            id: ventana._id,
-            description: ventana.descripcion || '',
-            year: semana
-              ? new Date(semana.startDate).getFullYear()
-              : 'Desconocido',
-            month: semana
-              ? new Date(semana.startDate).toLocaleString('default', {
-                  month: 'long',
-                })
-              : 'Desconocido',
-            type: 'Ventana' as const,
-          };
-        });
+      const filteredVentanas =
+        !onlyIncidencias &&
+        todasLasVentanas
+          .filter(
+            (ventana) =>
+              (!onlyBacklog || ventana.enBacklog) &&
+              ventana.descripcion &&
+              ventana.descripcion
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+          )
+          .map((ventana) => {
+            const semana = semanaMap.get(ventana.semana);
+            return {
+              id: ventana._id,
+              description: ventana.descripcion || '',
+              year: semana
+                ? new Date(semana.startDate).getFullYear()
+                : 'Desconocido',
+              month: semana
+                ? new Date(semana.startDate).toLocaleString('default', {
+                    month: 'long',
+                  })
+                : 'Desconocido',
+              type: 'Ventana' as const,
+            };
+          });
 
-      console.log('Filtered Incidencias:', filteredIncidencias);
-      console.log('Filtered Ventanas:', filteredVentanas);
-
-      setResults([...filteredIncidencias, ...filteredVentanas]);
+      setResults([...(filteredIncidencias || []), ...(filteredVentanas || [])]);
     };
 
     handleSearch();
-  }, [searchTerm, incidencias, todasLasVentanas, semanas]);
+  }, [
+    searchTerm,
+    incidencias,
+    todasLasVentanas,
+    semanas,
+    onlyBacklog,
+    onlyIncidencias,
+    onlyVentanas,
+  ]);
 
   const handleSelect = async (result: SearchResult) => {
     if (result.type === 'Incidencia') {
@@ -123,12 +146,11 @@ function SearchBar() {
       if (ventana) {
         await obtenerVentana(ventana.semana, result.id);
         guardarVentanaActual(ventana);
-        // Actualiza la semana seleccionada en el contexto
         setSemanaSeleccionada(ventana.semana);
       } else {
         console.error('Ventana no encontrada.');
       }
-      setIsOpen(false); // Cierra el menú de búsqueda después de seleccionar
+      setIsOpen(false);
     }
   };
 
@@ -150,12 +172,13 @@ function SearchBar() {
 
   return (
     <div
+      className={ClassName}
       ref={containerRef}
-      style={{ position: 'relative', maxWidth: '400px', margin: '0 auto' }}
+      style={{ position: 'relative' }}
     >
       <input
         type='text'
-        placeholder='Buscar incidencias o ventanas...'
+        placeholder='Buscar...'
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
@@ -168,13 +191,13 @@ function SearchBar() {
           color: '#000',
         }}
       />
-      {loading && <p>Cargando...</p>}
+
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {isOpen && results.length > 0 && (
         <ul
           style={{
             position: 'absolute',
-            top: '40px',
+            top: '100%',
             left: 0,
             right: 0,
             backgroundColor: '#fff',
@@ -182,6 +205,8 @@ function SearchBar() {
             padding: 0,
             border: '1px solid #ddd',
             zIndex: 10,
+            maxHeight: '200px',
+            overflowY: 'auto',
           }}
         >
           {results.map((result) => (

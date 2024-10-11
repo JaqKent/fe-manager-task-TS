@@ -23,7 +23,6 @@ function NuevaCuenta() {
 
   const navigate = useNavigate();
 
-  // useEffect que valida autenticación, registro duplicado, o login
   useEffect(() => {
     verificarUsuarioAutenticado();
     resetStateMsg();
@@ -39,7 +38,6 @@ function NuevaCuenta() {
     }
   }, [mensaje, isAuthenticated, navigate]);
 
-  // State para iniciar registro
   const [usuario, guardarUsuario] = useState({
     nombre: '',
     email: '',
@@ -47,7 +45,6 @@ function NuevaCuenta() {
     confirmar: '',
   });
 
-  // Extraer email y password de usuario
   const { nombre, email, password, confirmar } = usuario;
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -57,11 +54,9 @@ function NuevaCuenta() {
     });
   };
 
-  // Registrar usuario
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validar que no tengamos campos vacíos
     if (
       nombre.trim() === '' ||
       email.trim() === '' ||
@@ -72,7 +67,6 @@ function NuevaCuenta() {
       return;
     }
 
-    // Campo o state password mínimo de 6 caracteres
     if (password.length < 6) {
       mostrarAlerta(
         'El password debe ser de al menos 6 caracteres',
@@ -81,11 +75,12 @@ function NuevaCuenta() {
       return;
     }
 
-    // Revisar que sean iguales
     if (password !== confirmar) {
       mostrarAlerta('El password no son iguales', 'alerta-error');
       return;
     }
+
+    console.log('Datos enviados:', { nombre, email, password });
 
     register(nombre, email, password);
 
@@ -95,8 +90,6 @@ function NuevaCuenta() {
       password: '',
       confirmar: '',
     });
-
-    // usuarioAutenticado();
   };
 
   return (

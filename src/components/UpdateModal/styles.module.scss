@@ -8,7 +8,6 @@
   background-color: $background;
   border-radius: 0.5rem;
   box-shadow: $box-shadow;
-  height: 45rem;
   overflow-y: auto;
   position: fixed;
   width: 50vw !important;
@@ -58,9 +57,11 @@
 .commentboxModal {
   @include flex(space-between, center, column);
 
+  max-height: 25rem;
   padding: 1rem;
   border-bottom: 1px solid $gris2;
   width: 100%;
+  overflow: auto;
 }
 
 .modalCuadroTexto {

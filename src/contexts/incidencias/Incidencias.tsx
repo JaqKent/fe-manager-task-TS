@@ -28,6 +28,7 @@ interface IncidenciaContextProps {
     incidencia: Incidencia
   ) => Promise<any>;
   limpiarIncidencia: () => void;
+  setIncidenciaSeleccionada: Incidencia | null;
 }
 
 const IncidenciaContext = createContext<IncidenciaContextProps | undefined>(
@@ -69,7 +70,6 @@ export default function IncidenciaProvider({
         );
       }
     } catch (error) {
-      console.log('Error al obtener incidencias:', error);
       if (error.response) {
         console.log('Respuesta del servidor:', error.response.data);
       }
@@ -80,7 +80,9 @@ export default function IncidenciaProvider({
     try {
       setLoading(true);
       const response = await clienteAxios.get(`/incidencias/${incidenciaId}`);
-      setIncidenciaSeleccionada(response.data.incidencia);
+      if (incidenciaId) {
+        setIncidenciaSeleccionada(response.data.incidencia);
+      }
       setLoading(false);
     } catch (error) {
       console.log('Error al obtener incidencia individual:', error);
@@ -111,15 +113,13 @@ export default function IncidenciaProvider({
 
   const eliminarIncidencia = async (incidenciaId: string) => {
     try {
-      if (window.confirm('¿Seguro que deseas eliminar el ítem?')) {
-        setLoading(true);
-        await clienteAxios.delete(`/incidencias/${incidenciaId}`);
-        setIncidencias(
-          incidencias.filter((incidencia) => incidencia._id !== incidenciaId)
-        );
-        setIncidenciaSeleccionada(null);
-        setLoading(false);
-      }
+      setLoading(true);
+      await clienteAxios.delete(`/incidencias/${incidenciaId}`);
+      setIncidencias(
+        incidencias.filter((incidencia) => incidencia._id !== incidenciaId)
+      );
+      setIncidenciaSeleccionada(null);
+      setLoading(false);
     } catch (error) {
       console.log('Error al eliminar incidencia:', error);
       setLoading(false);
@@ -198,6 +198,7 @@ export default function IncidenciaProvider({
     guardarIncidenciaActual,
     actualizarIncidencia,
     limpiarIncidencia,
+    setIncidenciaSeleccionada,
   };
 
   return (

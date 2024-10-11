@@ -4,6 +4,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import SearchBar from '~components/Layout/Searchbar/SearchBar';
 import { useAuthContext } from '~contexts/auth/AuthContext';
 import { useSemanaContext } from '~contexts/Semana/Semana';
 
@@ -38,7 +39,16 @@ function BacklogVentanaMain() {
       <div className={styles.seccionPrincipal}>
         <main>
           <div className={styles.contenedorTareas}>
-            <ListadoVentanaBacklog />
+            <div className={styles.searchBarContainer}>
+              <SearchBar
+                ClassName={styles.searchBar}
+                onlyVentanas
+                onlyBacklog
+              />
+            </div>
+            <div>
+              <ListadoVentanaBacklog />
+            </div>
           </div>
         </main>
       </div>

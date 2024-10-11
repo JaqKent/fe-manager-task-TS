@@ -1,11 +1,5 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable import/extensions */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/no-shadow */
-
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import {
@@ -22,14 +16,14 @@ import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
-import { Ventana } from 'Interfaces/ventana';
+import { Ventana } from 'Interfaces/Ventana';
 
+import ModalDelete from '~components/CustomModal/ModalDelete/ModalDelete';
 import { getVentanaCells } from '~constants/constants';
 import { useVentanaContext } from '~contexts/Ventana/Ventana';
 
 import styles from './styles.module.scss';
 
-// Estilos compartidos
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -59,6 +53,10 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
   const { eliminarVentana, ventanaActual, guardarVentanaActual } =
     useVentanaContext();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+  const [ventanaAEliminar, setVentanaAEliminar] = useState<Ventana | null>(
+    null
+  );
 
   const cells = getVentanaCells(ventana);
 
@@ -66,13 +64,14 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
     setIsExpanded(!isExpanded);
   };
 
-  const handleEliminarVentana = () => {
-    eliminarVentana(ventana._id);
-  };
-
   const seleccionarVentana = (ventana: Ventana) => {
     guardarVentanaActual(ventana);
     ventanaActual(ventana._id);
+  };
+
+  const handleEliminarVentana = (ventana: Ventana) => {
+    setVentanaAEliminar(ventana);
+    setDeleteModalOpen(true);
   };
 
   return (
@@ -87,40 +86,12 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
                   align='left'
                   style={{ width: cell.width, padding: '7px' }}
                 >
-                  {cell.id === 'descripcion' ? (
-                    <>
-                      <div
-                        className={`${styles.description} ${
-                          isExpanded ? styles.expanded : styles.collapsed
-                        }`}
-                      >
-                        {cell.content}
-                      </div>
-                      <span
-                        className={styles.toggleButton}
-                        onClick={handleExpandClick}
-                      >
-                        {isExpanded ? (
-                          <>
-                            <span>Ver Menos</span>
-                            <FontAwesomeIcon icon={faChevronUp} />
-                          </>
-                        ) : (
-                          <>
-                            <span>Ver Más</span>
-                            <FontAwesomeIcon icon={faChevronDown} />
-                          </>
-                        )}
-                      </span>
-                    </>
-                  ) : (
-                    cell.content
-                  )}
+                  {cell.content}
                 </StyledTableCell>
               ))}
               <StyledTableCell
                 align='left'
-                style={{ width: '9.444%', padding: '2px' }}
+                style={{ width: '9.888%', padding: '1px 0' }}
               >
                 <div className={styles.actions}>
                   <button
@@ -152,7 +123,7 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
                   <button
                     type='button'
                     className={styles.buttonBorrar}
-                    onClick={handleEliminarVentana}
+                    onClick={() => handleEliminarVentana(ventana)}
                   >
                     X
                   </button>
@@ -163,6 +134,17 @@ function VentanaIndividual({ ventana, openModal, handleShow }: VentanaProps) {
         </Table>
       </TableContainer>
       <Toaster />
+      {isDeleteModalOpen && (
+        <ModalDelete
+          onClick={() => {
+            if (ventanaAEliminar) {
+              eliminarVentana(ventanaAEliminar._id);
+            }
+            setDeleteModalOpen(false);
+          }}
+          close={() => setDeleteModalOpen(false)}
+        />
+      )}
     </>
   );
 }

@@ -50,9 +50,10 @@ function ListadoVentana() {
   const [selectedSemana, setSelectedSemana] = useState<string>('');
   const [mensajeConfirmacion, setMensajeConfirmacion] =
     useState<boolean>(false);
-  const location = useLocation();
+  const [shouldFetchVentanas, setShouldFetchVentanas] = useState(false);
 
   const { semanas } = useSemanaContext();
+  const location = useLocation();
 
   const { user } = useAuthContext();
 
@@ -202,9 +203,7 @@ function ListadoVentana() {
         usuarioCreador: idUsuarioCreador,
       });
 
-      setLoading(true);
       await obtenerComments(ventanaseleccionada._id);
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -217,13 +216,12 @@ function ListadoVentana() {
 
   const handleDeleteUpdate = async (commentId: string) => {
     try {
-      setLoading(true);
       await eliminarComment(commentId);
       await obtenerComments(ventanaseleccionada._id);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      console.log('comentario borrado');
     }
   };
 
@@ -235,7 +233,7 @@ function ListadoVentana() {
   }));
 
   useEffect(() => {
-    if (semanaActual && semanaActual._id) {
+    if (shouldFetchVentanas && semanaActual && semanaActual._id) {
       setLoading(true);
       obtenerVentanasPorSemana(semanaActual._id)
         .then(() => setLoading(false))
@@ -243,11 +241,20 @@ function ListadoVentana() {
           setLoading(false);
           console.error('Error:', error);
         });
+      setShouldFetchVentanas(false);
     }
+  }, [shouldFetchVentanas, semanaActual]);
+
+  useEffect(() => {
+    limpiarVentanaSemana();
+    setShouldFetchVentanas(true);
+  }, [location.pathname]);
+
+  useEffect(() => {
     if (semanas) {
       setSemanasOptions(semanas);
     }
-  }, [semanaActual, semanas]);
+  }, [semanas]);
 
   useEffect(() => {
     if (ventanaseleccionada) {
@@ -256,21 +263,30 @@ function ListadoVentana() {
     }
   }, [ventanaseleccionada]);
 
+  useEffect(() => {
+    if (show && ventanaseleccionada?._id) {
+      const cargarComentarios = async () => {
+        setCommentLoading(true);
+        limpiarComments();
+        try {
+          await obtenerComments(ventanaseleccionada._id);
+        } catch (error) {
+          console.error('Error al obtener comentarios:', error);
+        } finally {
+          setCommentLoading(false);
+        }
+      };
+
+      cargarComentarios();
+    }
+  }, [show, ventanaseleccionada]);
+
   if (!semanaActual || ventanasemana === null)
     return <h2 className={styles.textoProyecto}>Selecciona una Semana</h2>;
 
-  const handleShow = async () => {
-    if (!show && ventanaseleccionada?._id) {
+  const handleShow = () => {
+    if (!show) {
       setShow(true);
-      setCommentLoading(true);
-      limpiarComments();
-      try {
-        await obtenerComments(ventanaseleccionada._id);
-      } catch (error) {
-        console.error('Error al obtener comentarios:', error);
-      } finally {
-        setCommentLoading(false);
-      }
     } else {
       setShow(false);
     }
@@ -344,7 +360,7 @@ function ListadoVentana() {
                               key={column.id}
                               align='left'
                               className={styles.tituloTable}
-                              style={{ width: column.width, padding: '8px' }}
+                              style={{ width: column.width, padding: '7px' }}
                             >
                               {column.label}
                             </StyledTableCell>

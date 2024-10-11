@@ -3,6 +3,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Incidencia } from 'Interfaces/Incidencias';
 
 import AlertaContext from '~contexts/alert/AlertContext';
@@ -23,8 +24,14 @@ function ListadoIncidencia({
   mesSeleccionadoIncidencia,
   mostrarEnBacklog,
 }: ListadoIncidenciaProps) {
-  const { incidencias, obtenerIncidencias } = useIncidenciaContext();
+  const {
+    incidencias,
+    obtenerIncidencias,
+    limpiarIncidencia,
+    setIncidenciaSeleccionada,
+  } = useIncidenciaContext();
   const { alerta } = useContext(AlertaContext);
+  const location = useLocation();
 
   const [incidenciasFiltradas, setIncidenciasFiltradas] = useState<
     Incidencia[]
@@ -33,6 +40,10 @@ function ListadoIncidencia({
 
   const handleButtonClick = (id: string) => {
     setActiveButtonId((prevId) => (prevId === id ? null : id));
+    const incidenciaSeleccionada = incidencias.find(
+      (incidencia) => incidencia._id === id
+    );
+    setIncidenciaSeleccionada(incidenciaSeleccionada);
   };
 
   useEffect(() => {
@@ -65,6 +76,10 @@ function ListadoIncidencia({
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    limpiarIncidencia();
+  }, [location.pathname]);
 
   if (incidencias.length === 0) {
     return <p>Crear una Incidencia para comenzar</p>;

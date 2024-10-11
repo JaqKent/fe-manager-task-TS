@@ -101,24 +101,60 @@ export const ADD_ITEM_INCIDENCIA = [
 ];
 
 export const VentanaTable = [
-  { id: 'descripcion', label: 'Descripcion', width: '15%' },
-  { id: 'solicitante', label: 'Solicitante', width: '9.444%' },
-  { id: 'estado', label: 'Estado', width: '9.444%' },
+  { id: 'descripcion', label: 'Descripcion', width: '33.888%' },
+  { id: 'solicitante', label: 'Solicitante', width: '9%' },
+  { id: 'estado', label: 'Estado', width: '9%' },
   {
     id: 'fechaImplementacion',
     label: 'Fecha de Implementación',
     width: '9.444%',
   },
-  { id: 'crq', label: 'CRQ', width: '9.444%' },
-  { id: 'ejecutaTarea', label: 'Ejecuta Tarea', width: '9.444%' },
-  { id: 'controla', label: 'Controla', width: '9.444%' },
-  { id: 'pruebasPost', label: 'Pruebas Post', width: '9.444%' },
+  { id: 'crq', label: 'CRQ', width: '10.776%' },
+  { id: 'pruebasPost', label: 'Pruebas Post', width: '9%' },
   {
     id: 'impactoNotificacion',
     label: 'Impacto Notificación/ Afecta Idp',
+    width: '9%',
+  },
+  { id: 'acciones', label: '', width: '9.888%' },
+];
+
+export const getVentanaCells = (ventana: Ventana) => [
+  {
+    id: 'descripcion',
+    label: 'descripcion',
+    content: ventana.descripcion,
+    width: '33.888%',
+  },
+  {
+    id: 'solicitante',
+    label: 'solicitante',
+    content: ventana.solicitante,
+    width: '9%',
+  },
+  { id: 'estado', label: 'Estado', content: ventana.estado, width: '9%' },
+  {
+    id: 'fechaImplementacion',
+    label: 'fechaImplementacion',
+    content: ventana.fechaImplementacion,
     width: '9.444%',
   },
-  { id: 'acciones', label: '', width: '9.444%' },
+  { id: 'crq', label: 'crq', content: ventana.crq, width: '10.776%' },
+  {
+    id: 'pruebasPost',
+    label: 'pruebasPost',
+    content: ventana.pruebasPost,
+    width: '9%',
+  },
+  {
+    id: 'impactoNotificacion/afectaIdp',
+    label: 'impactoNotificacion/afectaIdp',
+    content:
+      ventana.impactoNotificacion && ventana.afectaIdp
+        ? `${ventana.impactoNotificacion}/${ventana.afectaIdp}`
+        : '',
+    width: '9%',
+  },
 ];
 
 export const IncidenciaTable = [
@@ -177,55 +213,5 @@ export const getIncidenciaCells = (incidencia: Incidencia) => [
     label: 'Asignado',
     value: incidencia.asignado,
     width: '13.33%',
-  },
-];
-
-export const getVentanaCells = (ventana: Ventana) => [
-  {
-    id: 'descripcion',
-    label: 'descripcion',
-    content: ventana.descripcion,
-    width: '15%',
-  },
-  {
-    id: 'solicitante',
-    label: 'solicitante',
-    content: ventana.solicitante,
-    width: '9.444%',
-  },
-  { id: 'estado', label: 'Estado', content: ventana.estado, width: '9.444%%' },
-  {
-    id: 'fechaImplementacion',
-    label: 'fechaImplementacion',
-    content: ventana.fechaImplementacion,
-    width: '9.444%',
-  },
-  { id: 'crq', label: 'crq', content: ventana.crq, width: '9.444%' },
-  {
-    id: 'ejecutaTarea',
-    label: 'ejecutaTarea',
-    content: ventana.ejecutaTarea,
-    width: '9.444%',
-  },
-  {
-    id: 'controla',
-    label: 'controla',
-    content: ventana.controla,
-    width: '9.444%',
-  },
-  {
-    id: 'pruebasPost',
-    label: 'pruebasPost',
-    content: ventana.pruebasPost,
-    width: '9.444%',
-  },
-  {
-    id: 'impactoNotificacion/afectaIdp',
-    label: 'impactoNotificacion/afectaIdp',
-    content:
-      ventana.impactoNotificacion && ventana.afectaIdp
-        ? `${ventana.impactoNotificacion}/${ventana.afectaIdp}`
-        : '',
-    width: '9.444%',
   },
 ];

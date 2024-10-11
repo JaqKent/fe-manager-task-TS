@@ -203,9 +203,7 @@ function ListadoVentanaEnBacklog() {
         usuarioCreador: idUsuarioCreador,
       });
 
-      setLoading(true);
       await obtenerComments(ventanaseleccionada._id);
-      setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -213,13 +211,12 @@ function ListadoVentanaEnBacklog() {
 
   const handleDeleteUpdate = async (commentId: string) => {
     try {
-      setLoading(true);
       await eliminarComment(commentId);
       await obtenerComments(ventanaseleccionada._id);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      console.log('comentario eliminado');
     }
   };
   const fields = ADD_ITEM_FORM.map((item) => ({
@@ -342,32 +339,6 @@ function ListadoVentanaEnBacklog() {
                 </Stack>
               ) : (
                 <div>
-                  <Paper
-                    className='search-input'
-                    component='form'
-                    sx={{ p: '2px 4px', display: 'flex', width: 400 }}
-                  >
-                    <InputBase
-                      className={styles.searchInput}
-                      sx={{ ml: 1, flex: 1 }}
-                      placeholder='Buscar Por Descripcion'
-                      inputProps={{ 'aria-label': 'Buscar', fontSize: 14 }}
-                      onChange={search}
-                    />
-                    <IconButton
-                      sx={{ p: '10px' }}
-                      style={{
-                        pointerEvents: 'none',
-                        width: '8%',
-                        fontSize: 14,
-                      }}
-                      aria-label='search'
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </Paper>
-                  <br />
-
                   <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 700 }} aria-label='customized table'>
                       <TableHead>

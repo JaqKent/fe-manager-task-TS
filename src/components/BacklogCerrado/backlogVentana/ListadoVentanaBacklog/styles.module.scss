@@ -47,7 +47,7 @@
 .appHeaderBranch {
   @include flex(flex-end, center, row);
 
-  margin-top: -50px;
+  margin-bottom: 30px;
 
   .buttonCrearVentana {
     @include flex(center, center, row);

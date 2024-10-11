@@ -44,9 +44,8 @@ export default function CommentVentanaProvider({
 
   const obtenerComments = async (ventanaId: string) => {
     try {
-      console.log('Obteniendo comentarios para ventanaId:', ventanaId);
       const response = await clienteAxios.get(`/commentsVentanas/${ventanaId}`);
-      console.log('Comentarios obtenidos:', response.data);
+
       setCommentVentanas(response.data);
     } catch (error) {
       console.error('Error al obtener comentarios:', error);
@@ -56,12 +55,11 @@ export default function CommentVentanaProvider({
 
   const agregarComment = async (comment: CommentVentana) => {
     try {
-      console.log('Agregando comentario:', comment);
       const response = await clienteAxios.post(
         `/commentsVentanas/${comment.ventanas}`,
         comment
       );
-      console.log('Comentario agregado:', response.data.commentNuevo);
+
       setCommentVentanas([...commentVentanas, response.data.commentNuevo]);
     } catch (error) {
       console.error('Error al agregar comentario:', error);
@@ -70,17 +68,14 @@ export default function CommentVentanaProvider({
   };
 
   const eliminarComment = async (commentId: string) => {
-    if (window.confirm('¿Seguro que deseas eliminar el comentario?')) {
-      try {
-        console.log('Eliminando comentario con ID:', commentId);
-        await clienteAxios.delete(`/commentsVentanas/${commentId}`);
-        setCommentVentanas(
-          commentVentanas.filter((comment) => comment._id !== commentId)
-        );
-      } catch (error) {
-        console.error('Error al eliminar comentario:', error);
-        setMensaje('Hubo un error al eliminar el comentario');
-      }
+    try {
+      await clienteAxios.delete(`/commentsVentanas/${commentId}`);
+      setCommentVentanas(
+        commentVentanas.filter((comment) => comment._id !== commentId)
+      );
+    } catch (error) {
+      console.error('Error al eliminar comentario:', error);
+      setMensaje('Hubo un error al eliminar el comentario');
     }
   };
 

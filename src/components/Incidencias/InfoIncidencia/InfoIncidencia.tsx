@@ -9,8 +9,6 @@ import { Spinner } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -19,7 +17,6 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Incidencia } from 'Interfaces/Incidencias';
 
 import CustomModal from '~components/CustomModal/CustomModal';
 import UpdateModal from '~components/UpdateModal/UpdateModal';
@@ -39,6 +36,7 @@ function ListadoInfoIncidencia() {
   const [commentLoading, setCommentLoading] = useState<boolean>(false);
   const [mensajeConfirmacion, setMensajeConfirmacion] =
     useState<boolean>(false);
+  const [shouldFetchIncidencia, setShouldFetchIncidencia] = useState(false);
 
   const [dataComment, setDataComment] = useState<{
     update: string;
@@ -47,7 +45,7 @@ function ListadoInfoIncidencia() {
     update: '',
     usuarioCreador: '',
   });
-  const [commentsLoaded, setCommentsLoaded] = useState<boolean>(false);
+
   const location = useLocation();
 
   const {
@@ -70,7 +68,7 @@ function ListadoInfoIncidencia() {
 
   const obtenerIdUsuarioCreador = (): string | null => {
     const id = user?._id || null;
-    console.log('ID del usuario creador:', id);
+
     return id;
   };
 
@@ -130,6 +128,7 @@ function ListadoInfoIncidencia() {
       }
       setLocalLoading(true);
       obtenerIncidenciaIndividual(incidenciaSeleccionada._id);
+
       setLocalLoading(false);
     } catch (error) {
       console.error(error);
@@ -140,10 +139,7 @@ function ListadoInfoIncidencia() {
     try {
       const idUsuarioCreador = obtenerIdUsuarioCreador();
 
-      console.log('incidenciaSeleccionada:', incidenciaSeleccionada);
-
       if (!incidenciaSeleccionada || !incidenciaSeleccionada._id) {
-        console.error('No se ha seleccionado una incidencia válida.');
         return;
       }
 
@@ -153,8 +149,6 @@ function ListadoInfoIncidencia() {
         usuarioCreador: idUsuarioCreador,
       };
 
-      console.log('updateIncidencia:', updateIncidencia);
-
       await agregarComment(updateIncidencia);
 
       setDataComment({
@@ -162,9 +156,7 @@ function ListadoInfoIncidencia() {
         usuarioCreador: idUsuarioCreador,
       });
 
-      setLocalLoading(true);
       await obtenerComments(incidenciaSeleccionada._id);
-      setLocalLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -203,13 +195,12 @@ function ListadoInfoIncidencia() {
 
   const handleDeleteUpdate = async (commentId: string) => {
     try {
-      setLocalLoading(true);
       await eliminarComment(commentId);
       await obtenerComments(incidenciaSeleccionada._id);
     } catch (error) {
       console.error(error);
     } finally {
-      setLocalLoading(false);
+      console.log('comentario eliminado');
     }
   };
 
@@ -220,12 +211,12 @@ function ListadoInfoIncidencia() {
     required: item.required,
   }));
 
-  const incidenciaActual = incidencias.find(
-    (incidencia) => incidencia._id === incidenciaSeleccionada
-  );
-
   useEffect(() => {
-    if (incidenciaSeleccionada && incidenciaSeleccionada._id) {
+    if (
+      shouldFetchIncidencia &&
+      incidenciaSeleccionada &&
+      incidenciaSeleccionada._id
+    ) {
       setLocalLoading(true);
       obtenerIncidenciaIndividual(incidenciaSeleccionada._id)
         .then(() => {
@@ -234,16 +225,16 @@ function ListadoInfoIncidencia() {
           }, 1000);
         })
         .catch((error) => {
-          console.error('Error al obtener la incidencia individual:', error);
           setLocalLoading(false);
         });
+
+      setShouldFetchIncidencia(false);
     }
-  }, [incidenciaActual]);
+  }, [shouldFetchIncidencia, incidenciaSeleccionada]);
 
   useEffect(() => {
-    return () => {
-      limpiarIncidencia();
-    };
+    limpiarIncidencia();
+    setShouldFetchIncidencia(true);
   }, [location.pathname]);
 
   const openModal = () => setModal(!modal);
@@ -257,6 +248,10 @@ function ListadoInfoIncidencia() {
       fontSize: 14,
     },
   }));
+
+  useEffect(() => {
+    limpiarIncidencia();
+  }, [location.pathname]);
 
   if (incidenciaSeleccionada === null) {
     return <h2 className={styles.textoProyecto}>Selecciona una incidencia</h2>;

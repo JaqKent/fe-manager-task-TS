@@ -23,9 +23,11 @@ function IncidenciaSidebarCerrada() {
     useState<string>('');
   const [mesSeleccionadoIncidencia, setMesSeleccionadoIncidencia] =
     useState<string>('');
-
   useEffect(() => {
     obtenerIncidencias();
+
+    setAnioSeleccionadoIncidencia('');
+    setMesSeleccionadoIncidencia('');
   }, []);
 
   const ordenarMesesIncidencia = (mesA: string, mesB: string): number => {

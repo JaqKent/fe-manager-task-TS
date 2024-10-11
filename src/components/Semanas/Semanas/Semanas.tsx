@@ -4,6 +4,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import SearchBar from '~components/Layout/Searchbar/SearchBar';
 import ListadoVentana from '~components/Ventanas/ListadoVentana/ListadoVentana';
 import { useAuthContext } from '~contexts/auth/AuthContext';
 import { useSemanaContext } from '~contexts/Semana/Semana';
@@ -38,7 +39,12 @@ function Semanas() {
       <div className={styles.seccionPrincipal}>
         <main>
           <div className={styles.contenedorTareas}>
-            <ListadoVentana />
+            <div className={styles.searchBarContainer}>
+              <SearchBar ClassName={styles.searchBar} onlyVentanas />
+            </div>
+            <div>
+              <ListadoVentana />
+            </div>
           </div>
         </main>
       </div>
