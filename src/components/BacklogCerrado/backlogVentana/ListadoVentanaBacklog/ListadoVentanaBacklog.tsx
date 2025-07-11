@@ -8,12 +8,8 @@
 /* eslint-disable max-lines */
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { useLocation } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -67,7 +63,6 @@ function ListadoVentanaEnBacklog() {
     semanaSeleccionada,
     obtenerVentanasPorSemana,
     actualizarVentana,
-    limpiarVentanaSemana,
   } = useVentanaContext();
 
   const {
@@ -126,8 +121,8 @@ function ListadoVentanaEnBacklog() {
 
   const openModal = (): void => setModal(!modal);
 
-  const formatFecha = (fecha: string): string => {
-    const date = new Date(fecha);
+  const formatFecha = (fecha: string | Date): string => {
+    const date = typeof fecha === 'string' ? new Date(fecha) : fecha;
     const dia = date.getDate().toString().padStart(2, '0');
     const mes = (date.getMonth() + 1).toString().padStart(2, '0');
     return `${dia}/${mes}`;
@@ -135,17 +130,20 @@ function ListadoVentanaEnBacklog() {
 
   const handleSubmit = async (formData: any): Promise<void> => {
     try {
-      if (ventanaseleccionada) {
+      if (ventanaseleccionada && semanaActual && semanaActual._id) {
         const ventanaActualizada = {
           ...formData,
           semana: selectedSemana,
         };
+        if (!ventanaseleccionada._id) {
+          throw new Error('La ventana seleccionada no tiene un ID definido');
+        }
         await actualizarVentana(
           semanaActual._id,
           ventanaseleccionada._id,
           ventanaActualizada
         );
-      } else {
+      } else if (semanaActual && semanaActual._id) {
         const ventanaConSemana = {
           ...formData,
           semana: semanaSeleccionada,
@@ -166,11 +164,16 @@ function ListadoVentanaEnBacklog() {
           impactoNotificacion: '',
           enBacklog: false,
         });
+      } else {
+        // Handle the case where semanaActual or its _id is undefined
+        throw new Error('Semana actual no está definida');
       }
 
-      setLoading(true);
-      obtenerVentanasPorSemana(semanaActual._id);
-      setLoading(false);
+      if (semanaActual && semanaActual._id) {
+        setLoading(true);
+        await obtenerVentanasPorSemana(semanaActual._id);
+        setLoading(false);
+      }
 
       openModal();
       setMensajeConfirmacion(true);
@@ -190,20 +193,41 @@ function ListadoVentanaEnBacklog() {
     try {
       const idUsuarioCreador = obtenerIdUsuarioCreador();
 
+      if (!ventanaseleccionada) {
+        throw new Error('No hay ventana seleccionada');
+      }
+
       const updateVentana = {
         ...formData,
         ventanas: ventanaseleccionada._id,
-        usuarioCreador: idUsuarioCreador,
+        usuarioCreador: idUsuarioCreador ?? '',
       };
 
       await agregarComment(updateVentana);
 
       setDataComment({
         update: '',
-        usuarioCreador: idUsuarioCreador,
+        usuarioCreador: idUsuarioCreador ?? '',
       });
 
-      await obtenerComments(ventanaseleccionada._id);
+      if (ventanaseleccionada._id) {
+        if (
+          ventanaseleccionada &&
+          typeof ventanaseleccionada._id === 'string'
+        ) {
+          if (
+            ventanaseleccionada &&
+            typeof ventanaseleccionada._id === 'string'
+          ) {
+            if (
+              ventanaseleccionada &&
+              typeof ventanaseleccionada._id === 'string'
+            ) {
+              obtenerComments(ventanaseleccionada._id);
+            }
+          }
+        }
+      }
     } catch (error) {
       console.error(error);
     }
@@ -211,8 +235,8 @@ function ListadoVentanaEnBacklog() {
 
   const handleDeleteUpdate = async (commentId: string) => {
     try {
-      await eliminarComment(commentId);
-      await obtenerComments(ventanaseleccionada._id);
+      eliminarComment(commentId);
+      obtenerComments(ventanaseleccionada._id);
     } catch (error) {
       console.error(error);
     } finally {
@@ -257,7 +281,7 @@ function ListadoVentanaEnBacklog() {
       setCommentLoading(true);
       limpiarComments();
       try {
-        await obtenerComments(ventanaseleccionada._id);
+        obtenerComments(ventanaseleccionada._id);
       } catch (error) {
         console.error('Error al obtener comentarios:', error);
       } finally {
@@ -383,12 +407,15 @@ function ListadoVentanaEnBacklog() {
                 title='Ventana'
                 fields={fields}
                 handleSubmit={handleSubmit}
-                ventanaActual={ventanaseleccionada}
+                ventanaActual={ventanaseleccionada ?? undefined}
                 onChange={handleChange}
                 handleCloseModal={openModal}
                 selectedSemana={selectedSemana}
                 setSelectedSemana={setSelectedSemana}
                 semanasOptions={semanasOptions}
+                handleSemanaChange={(event) =>
+                  setSelectedSemana(event.target.value)
+                }
                 showWeek
                 typelabel='backlog'
               />

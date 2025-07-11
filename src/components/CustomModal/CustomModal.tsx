@@ -12,6 +12,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import MenuItem from '@mui/material/MenuItem';
+import type { SelectChangeEvent } from '@mui/material/Select';
 import Select from '@mui/material/Select';
 import { Field } from 'Interfaces/Incidencias';
 import { Semana } from 'Interfaces/Semana';
@@ -19,7 +20,6 @@ import { Semana } from 'Interfaces/Semana';
 import DropdownSemana from './DropDownSemanas/DropdownSemanas';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './styles.module.scss';
 
 interface CustomModalProps {
   show: boolean;
@@ -31,7 +31,7 @@ interface CustomModalProps {
   meses?: string[];
   setSelectedMonth?: (month: string) => void;
   selectedMonth?: string;
-  ventanaActual?: never;
+  ventanaActual?: any;
   selectedSemana?: string;
   semanasOptions?: Semana[];
   setSelectedSemana?: (id: string) => void;
@@ -60,8 +60,18 @@ function CustomModal({
   onChange,
   handleSemanaChange,
 }: CustomModalProps) {
+  const handleMonthSelectChange = (e: SelectChangeEvent<string>) => {
+    const { value } = e.target;
+    setFormData((prevFormData: any) => ({
+      ...prevFormData,
+      month: value,
+    }));
+    if (setSelectedMonth) {
+      setSelectedMonth(value);
+    }
+  };
   const initialFormData = {
-    ...ventanaActual,
+    ...(ventanaActual || {}),
     enBacklog: ventanaActual ? ventanaActual.enBacklog || false : false,
     month: '',
   };
@@ -97,28 +107,39 @@ function CustomModal({
           new Date(semana.startDate).toLocaleDateString() ===
           new Date(ventanaActual.startDate).toLocaleDateString()
       );
-      if (semanaActual) {
-        setSelectedSemana(semanaActual._id);
-        setFormData((prevFormData) => ({
+      if (
+        semanaActual &&
+        formData.selectedSemana !== semanaActual._id // <-- Solo si cambia
+      ) {
+        if (setSelectedSemana && typeof semanaActual._id === 'string') {
+          setSelectedSemana(semanaActual._id);
+        }
+        setFormData((prevFormData: typeof formData) => ({
           ...prevFormData,
           selectedSemana: semanaActual._id,
         }));
       }
     }
-  }, [ventanaActual, semanasOptions]);
+    // eslint-disable-next-line
+  }, [ventanaActual, semanasOptions,formData.selectedSemana]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
     fieldName: string
   ) => {
-    const { value, type, checked } = e.target;
+    const { value, type } = e.target;
+    const { checked } = e.target as HTMLInputElement;
 
     if (fieldName === 'month') {
       setFormData((prevFormData: any) => ({
         ...prevFormData,
         [fieldName]: value,
       }));
-      setSelectedMonth(value);
+      if (setSelectedMonth) {
+        setSelectedMonth(value);
+      }
     } else {
       setFormData((prevFormData: any) => ({
         ...prevFormData,
@@ -142,9 +163,7 @@ function CustomModal({
     formattedDate.setDate(formattedDate.getDate() + 1);
 
     const day = formattedDate.toLocaleDateString('es-ES', { day: 'numeric' });
-    const month = (formattedDate.getMonth() + 1).toLocaleString('es-ES', {
-      month: 'numeric',
-    });
+    const month = (formattedDate.getMonth() + 1).toString();
 
     return `${day}/${month}`;
   };
@@ -229,7 +248,7 @@ function CustomModal({
             />
             {showWeek && (
               <DropdownSemana
-                semanasOptions={semanasOptions}
+                semanasOptions={semanasOptions || []}
                 selectedSemana={formData.selectedSemana}
                 handleSemanaChange={handleSemanaChange}
               />
@@ -240,18 +259,19 @@ function CustomModal({
                 <Select
                   label='Mes: '
                   value={selectedMonth}
-                  onChange={(e) => handleChange(e, 'month')}
+                  onChange={handleMonthSelectChange}
                   style={{ width: '180px', fontSize: '16px' }}
                 >
-                  {meses.map((mes) => (
-                    <MenuItem
-                      key={mes}
-                      value={mes}
-                      style={{ fontSize: '16px' }}
-                    >
-                      {mes}
-                    </MenuItem>
-                  ))}
+                  {meses &&
+                    meses.map((mes) => (
+                      <MenuItem
+                        key={mes}
+                        value={mes}
+                        style={{ fontSize: '16px' }}
+                      >
+                        {mes}
+                      </MenuItem>
+                    ))}
                 </Select>
               </Form.Group>
             )}
@@ -264,7 +284,7 @@ function CustomModal({
                 <Form.Control
                   type={field.type || 'text'}
                   name={field.name}
-                  value={formData[field.name] || ''}
+                  value={field.name ? formData[field.name as string] || '' : ''}
                   onChange={(e) => handleChange(e, field.name)}
                 />
               </Form.Group>
