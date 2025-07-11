@@ -42,7 +42,7 @@
       }
     ]
   },
-  "include": ["src", "./.eslintrc.cjs", "./vite.config.ts"],
-  "exclude": ["vite.config.d.ts"],
+  "include": ["src", "./.eslintrc.cjs"],
+  "exclude": ["vite.config.ts", "vite.config.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
