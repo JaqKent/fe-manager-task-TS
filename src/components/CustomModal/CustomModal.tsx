@@ -1,44 +1,36 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable consistent-return */
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable react/require-default-props */
-/* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable max-lines */
 import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import MenuItem from '@mui/material/MenuItem';
-import type { SelectChangeEvent } from '@mui/material/Select';
-import Select from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Field } from 'Interfaces/Incidencias';
 import { Semana } from 'Interfaces/Semana';
 
-import DropdownSemana from './DropDownSemanas/DropdownSemanas';
+import SemanaCalendarSelector from './CalendarSelect/CalendarSelect';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface CustomModalProps {
   show: boolean;
   handleCloseModal: () => void;
-
   title: string;
   handleSubmit: (formData: any) => void;
   fields: Field[];
-  meses?: string[];
-  setSelectedMonth?: (month: string) => void;
-  selectedMonth?: string;
   ventanaActual?: any;
 
   semanasOptions?: Semana[];
+  selectedSemana: string;
   setSelectedSemana?: (id: string) => void;
+
+  meses?: string[];
+  selectedMonth?: string;
+  setSelectedMonth?: (month: string) => void;
+
   typelabel: string;
   showWeek?: boolean;
   mes?: boolean;
-  handleSemanaChange: (event: SelectChangeEvent<string>) => void;
 }
 
 function CustomModal({
@@ -47,77 +39,53 @@ function CustomModal({
   title,
   handleSubmit,
   fields,
-  meses,
-  setSelectedMonth,
-  selectedMonth,
   ventanaActual,
-  semanasOptions,
+  semanasOptions = [],
+  selectedSemana,
   setSelectedSemana,
+  meses = [],
+  selectedMonth,
+  setSelectedMonth,
   typelabel,
-  showWeek,
-  mes,
-
-  handleSemanaChange,
+  showWeek = false,
+  mes = false,
 }: CustomModalProps) {
-  const handleMonthSelectChange = (e: SelectChangeEvent<string>) => {
-    const { value } = e.target;
-    setFormData((prevFormData: any) => ({
-      ...prevFormData,
-      month: value,
-    }));
-    if (setSelectedMonth) {
-      setSelectedMonth(value);
-    }
-  };
-  const initialFormData = {
-    ...(ventanaActual || {}),
-    enBacklog: ventanaActual ? ventanaActual.enBacklog || false : false,
-    month: '',
-  };
-
-  const [formData, setFormData] = useState<any>(initialFormData);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [modalPosition, setModalPosition] = useState<{ x: number; y: number }>({
-    x: 0,
-    y: 0,
+  const [formData, setFormData] = useState<any>({
+    ...ventanaActual,
+    enBacklog: ventanaActual?.enBacklog ?? false,
+    month: selectedMonth ?? '',
+    selectedSemana: selectedSemana ?? '',
   });
+
+  const [isDragging, setIsDragging] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
     null
   );
-  const [hasMoved, setHasMoved] = useState(false);
 
   useEffect(() => {
-    if (show && ventanaActual) {
-      setFormData(ventanaActual);
+    if (ventanaActual) {
+      setFormData((prev) => ({
+        ...prev,
+        ...ventanaActual,
+        enBacklog: ventanaActual.enBacklog ?? false,
+      }));
     }
 
-    if (show && !hasMoved) {
-      setModalPosition({
-        x: 0,
-        y: 0,
-      });
-    }
-  }, [show, ventanaActual, hasMoved]);
-
-  useEffect(() => {
-    if (ventanaActual && semanasOptions) {
+    if (ventanaActual?.startDate && semanasOptions.length > 0) {
+      const fechaVentana = new Date(ventanaActual.startDate).getTime();
       const semanaActual = semanasOptions.find(
-        (semana) =>
-          new Date(semana.startDate).toLocaleDateString() ===
-          new Date(ventanaActual.startDate).toLocaleDateString()
+        (s) => new Date(s.startDate).getTime() === fechaVentana
       );
-      if (semanaActual && formData.selectedSemana !== semanaActual._id) {
-        if (setSelectedSemana && typeof semanaActual._id === 'string') {
-          setSelectedSemana(semanaActual._id);
-        }
-        setFormData((prevFormData: typeof formData) => ({
-          ...prevFormData,
+      if (semanaActual?._id && semanaActual._id !== formData.selectedSemana) {
+        setSelectedSemana?.(semanaActual._id);
+        setFormData((prev) => ({
+          ...prev,
           selectedSemana: semanaActual._id,
         }));
       }
     }
-    // eslint-disable-next-line
-  }, [ventanaActual, semanasOptions,formData.selectedSemana]);
+  }, [ventanaActual, semanasOptions]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -126,43 +94,28 @@ function CustomModal({
     fieldName: string
   ) => {
     const { value, type } = e.target;
-    const { checked } = e.target as HTMLInputElement;
+    const newValue =
+      type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
 
-    if (fieldName === 'month') {
-      setFormData((prevFormData: any) => ({
-        ...prevFormData,
-        [fieldName]: value,
-      }));
-      if (setSelectedMonth) {
-        setSelectedMonth(value);
-      }
-    } else {
-      setFormData((prevFormData: any) => ({
-        ...prevFormData,
-        [fieldName]: type === 'checkbox' ? checked : value,
-      }));
+    setFormData((prev) => ({
+      ...prev,
+      [fieldName]: newValue,
+    }));
+
+    if (fieldName === 'month' && setSelectedMonth) {
+      setSelectedMonth(newValue);
     }
+  };
+
+  const handleMonthSelectChange = (e: SelectChangeEvent<string>) => {
+    handleChange({ target: { value: e.target.value } } as any, 'month');
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formDataWithMonth = { ...formData };
-    if (mes) {
-      formDataWithMonth.month = selectedMonth;
-    }
-    handleSubmit(formDataWithMonth);
-    setFormData(initialFormData);
+    handleSubmit(formData);
+    setFormData({});
   };
-
-  /*  const formatDate = (date: string) => {
-    const formattedDate = new Date(date);
-    formattedDate.setDate(formattedDate.getDate() + 1);
-
-    const day = formattedDate.toLocaleDateString('es-ES', { day: 'numeric' });
-    const month = (formattedDate.getMonth() + 1).toString();
-
-    return `${day}/${month}`;
-  }; */
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
@@ -172,45 +125,43 @@ function CustomModal({
     });
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || !dragStart) return;
-    const newX = e.clientX - dragStart.x;
-    const newY = e.clientY - dragStart.y;
-
-    const clampedX = Math.max(0, Math.min(newX, window.innerWidth - 300));
-    const clampedY = Math.max(0, Math.min(newY, window.innerHeight - 300));
-
-    setModalPosition({ x: clampedX, y: clampedY });
-    setHasMoved(true);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    setDragStart(null);
-  };
-
   useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !dragStart) return;
+      const newX = e.clientX - dragStart.x;
+      const newY = e.clientY - dragStart.y;
+      setModalPosition({
+        x: Math.max(0, Math.min(newX, window.innerWidth - 300)),
+        y: Math.max(0, Math.min(newY, window.innerHeight - 300)),
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      setDragStart(null);
+    };
+
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
     }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
   }, [isDragging, dragStart]);
 
   const handleClose = () => {
     setFormData({});
-    setHasMoved(false);
+    setIsDragging(false);
     handleCloseModal();
   };
 
   return (
     <Modal
       show={show}
-      onHide={handleCloseModal}
+      onHide={handleClose}
       dialogClassName='modal-90w'
       style={{
         position: 'fixed',
@@ -224,7 +175,6 @@ function CustomModal({
       <Form onSubmit={handleFormSubmit}>
         <Modal.Header
           closeButton
-          onMouseDown={handleMouseDown}
           style={{
             cursor: isDragging ? 'grabbing' : 'grab',
             backgroundColor: '#282d32',
@@ -233,6 +183,7 @@ function CustomModal({
         >
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
           <Form.Group className='mb-3' controlId='ControlTextarea'>
             <Form.Check
@@ -242,50 +193,53 @@ function CustomModal({
               checked={formData.enBacklog || false}
               onChange={(e) => handleChange(e, 'enBacklog')}
             />
+
             {showWeek && (
-              <DropdownSemana
-                semanasOptions={semanasOptions || []}
-                selectedSemana={formData.selectedSemana}
-                handleSemanaChange={handleSemanaChange}
+              <SemanaCalendarSelector
+                semanasOptions={semanasOptions}
+                onSemanaSelect={(id) => {
+                  setSelectedSemana?.(id);
+                  setFormData((prev) => ({ ...prev, selectedSemana: id }));
+                }}
               />
             )}
+
             {mes && (
               <Form.Group controlId='selectMeses'>
                 <Form.Label>Mes</Form.Label>
                 <Select
                   label='Mes: '
-                  value={selectedMonth}
+                  value={selectedMonth ?? ''}
                   onChange={handleMonthSelectChange}
                   style={{ width: '180px', fontSize: '16px' }}
                 >
-                  {meses &&
-                    meses.map((mes) => (
-                      <MenuItem
-                        key={mes}
-                        value={mes}
-                        style={{ fontSize: '16px' }}
-                      >
-                        {mes}
-                      </MenuItem>
-                    ))}
+                  {meses.map((mes) => (
+                    <MenuItem
+                      key={mes}
+                      value={mes}
+                      style={{ fontSize: '16px' }}
+                    >
+                      {mes}
+                    </MenuItem>
+                  ))}
                 </Select>
               </Form.Group>
             )}
           </Form.Group>
 
-          {fields &&
-            fields.map((field) => (
-              <Form.Group key={field.name}>
-                <Form.Label>{field.label}</Form.Label>
-                <Form.Control
-                  type={field.type || 'text'}
-                  name={field.name}
-                  value={field.name ? formData[field.name as string] || '' : ''}
-                  onChange={(e) => handleChange(e, field.name || '')}
-                />
-              </Form.Group>
-            ))}
+          {fields.map((field) => (
+            <Form.Group key={field.name}>
+              <Form.Label>{field.label}</Form.Label>
+              <Form.Control
+                type={field.type || 'text'}
+                name={field.name}
+                value={formData[field.name] || ''}
+                onChange={(e) => handleChange(e, field.name)}
+              />
+            </Form.Group>
+          ))}
         </Modal.Body>
+
         <Modal.Footer>
           <Button variant='secondary' onClick={handleClose}>
             Cancelar

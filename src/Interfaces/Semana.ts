@@ -1,5 +1,5 @@
 export interface Semana {
-  _id?: string;
+  _id: string;
   startDate: Date;
   endDate: Date;
   month?: string;
