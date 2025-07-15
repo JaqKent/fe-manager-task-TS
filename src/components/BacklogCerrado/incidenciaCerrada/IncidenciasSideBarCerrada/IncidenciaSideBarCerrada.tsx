@@ -53,7 +53,11 @@ function IncidenciaSidebarCerrada() {
   useEffect(() => {
     const obtenerAniosUnicosIncidencia = () => {
       const aniosUnicosIncidencia = Array.from(
-        new Set(incidencias.map((incidencia) => incidencia.year))
+        new Set(
+          incidencias
+            .map((incidencia) => incidencia.year)
+            .filter((year): year is string => typeof year === 'string')
+        )
       );
       setAniosDisponiblesIncidencia(aniosUnicosIncidencia);
     };
@@ -70,6 +74,7 @@ function IncidenciaSidebarCerrada() {
               (incidencia) => incidencia.year === anioSeleccionadoIncidencia
             )
             .map((incidencia) => incidencia.month)
+            .filter((month): month is string => typeof month === 'string')
         )
       );
       setMesesDisponiblesIncidencia(mesesUnicosIncidencia);

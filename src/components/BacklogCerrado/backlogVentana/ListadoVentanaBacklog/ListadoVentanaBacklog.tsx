@@ -165,7 +165,6 @@ function ListadoVentanaEnBacklog() {
           enBacklog: false,
         });
       } else {
-        // Handle the case where semanaActual or its _id is undefined
         throw new Error('Semana actual no está definida');
       }
 
@@ -290,15 +289,6 @@ function ListadoVentanaEnBacklog() {
     } else {
       setShow(false);
     }
-  };
-
-  const search = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const query = e.target.value.toLowerCase();
-    setVentanaFiltered(
-      ventanasemana.filter((ventana: Ventana) =>
-        ventana.descripcion?.toLowerCase().includes(query)
-      )
-    );
   };
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({

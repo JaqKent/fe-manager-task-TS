@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { useEffect, useState } from 'react';
 import {
   Collapse,
@@ -45,11 +46,8 @@ function DropdownSemana({
     setSemanasAgrupadas(agrupadas);
   }, [semanasOptions]);
 
-  const formatDate = (date: string): string => {
-    const validDate = new Date(date);
-    return isNaN(validDate.getTime())
-      ? 'Fecha Inválida'
-      : validDate.toLocaleDateString();
+  const formatDate = (date: Date): string => {
+    return isNaN(date.getTime()) ? 'Fecha Inválida' : date.toLocaleDateString();
   };
 
   return (

@@ -24,7 +24,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 interface CustomModalProps {
   show: boolean;
   handleCloseModal: () => void;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
   title: string;
   handleSubmit: (formData: any) => void;
   fields: Field[];
@@ -32,7 +32,7 @@ interface CustomModalProps {
   setSelectedMonth?: (month: string) => void;
   selectedMonth?: string;
   ventanaActual?: any;
-  selectedSemana?: string;
+
   semanasOptions?: Semana[];
   setSelectedSemana?: (id: string) => void;
   typelabel: string;
@@ -51,13 +51,12 @@ function CustomModal({
   setSelectedMonth,
   selectedMonth,
   ventanaActual,
-  selectedSemana,
   semanasOptions,
   setSelectedSemana,
   typelabel,
   showWeek,
   mes,
-  onChange,
+
   handleSemanaChange,
 }: CustomModalProps) {
   const handleMonthSelectChange = (e: SelectChangeEvent<string>) => {
@@ -107,10 +106,7 @@ function CustomModal({
           new Date(semana.startDate).toLocaleDateString() ===
           new Date(ventanaActual.startDate).toLocaleDateString()
       );
-      if (
-        semanaActual &&
-        formData.selectedSemana !== semanaActual._id // <-- Solo si cambia
-      ) {
+      if (semanaActual && formData.selectedSemana !== semanaActual._id) {
         if (setSelectedSemana && typeof semanaActual._id === 'string') {
           setSelectedSemana(semanaActual._id);
         }
@@ -158,7 +154,7 @@ function CustomModal({
     setFormData(initialFormData);
   };
 
-  const formatDate = (date: string) => {
+  /*  const formatDate = (date: string) => {
     const formattedDate = new Date(date);
     formattedDate.setDate(formattedDate.getDate() + 1);
 
@@ -166,7 +162,7 @@ function CustomModal({
     const month = (formattedDate.getMonth() + 1).toString();
 
     return `${day}/${month}`;
-  };
+  }; */
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
@@ -285,7 +281,7 @@ function CustomModal({
                   type={field.type || 'text'}
                   name={field.name}
                   value={field.name ? formData[field.name as string] || '' : ''}
-                  onChange={(e) => handleChange(e, field.name)}
+                  onChange={(e) => handleChange(e, field.name || '')}
                 />
               </Form.Group>
             ))}
